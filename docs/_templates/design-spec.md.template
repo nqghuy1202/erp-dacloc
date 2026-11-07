@@ -1,0 +1,29 @@
+# Design-spec — {{TÊN VÙNG/FLOW}}
+> Load khi: task chạm UI của {{vùng}}
+covers: {{src/app/...}}
+last_verified: {{YYYY-MM-DD}}
+ttl_days: 90
+
+<!-- ai-simple-version: 1.25.0 — template sống trong skills/ui-design-logic (self-contained, Wave 3).
+     Format bị ép bởi design-verify.sh (lint section) — các section dưới là BẮT BUỘC. -->
+
+## Thang người dùng
+| Loại user | Muốn thấy gì | Truyền tải | Action tiếp |
+|---|---|---|---|
+| {{Public/Member/Admin}} | {{giá trị nhìn thấy}} | {{cách truyền tải}} | {{action}} |
+
+## Screen map
+| # | Màn | Vào từ | User đến để làm gì | Step tiếp theo | Primary |
+|---|---|---|---|---|---|
+| 1 | {{Màn}} | {{entry}} | {{goal}} | {{next}} | {{1 primary duy nhất}} |
+
+## Ma trận trạng thái
+| Màn hình | Chưa login | Trống | Đang tải | Lỗi | Dữ liệu cực đoan |
+|---|---|---|---|---|---|
+| {{Màn}} | {{redirect?}} | {{empty state}} | {{skeleton}} | {{retry}} | {{tràn/ngắn}} |
+
+## Platform
+Mobile-first {{375px}} · desktop {{1280px}} — touch target 44/48, contrast 4.5:1 + dark mode, focus ring không bị huỷ.
+
+## Nghiệm thu
+Screenshot từng màn ở từng trạng thái (QA đối chiếu ma trận) — {{đường dẫn thư mục ảnh}}.

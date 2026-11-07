@@ -1,0 +1,55 @@
+# Security Review — {{SCOPE}}
+
+> Load khi: task chạm {{SCOPE}} hoặc nghi lỗ hổng / secret / doc-injection ở vùng này
+covers: {{PATHS_RÀ_SOÁT}}
+last_verified: {{YYYY-MM-DD}}
+ttl_days: 90
+declared-coverage: A=secret-scan+doc-injection+review(git-time) | B=SCA/SAST(CI, point-to-tool) | C=NON-GOAL(pentest/DAST/red-team production)
+
+<!--
+Đây là security-review (nguyên tắc 14 + skill security-logic). CỔNG MÁY: security-verify.sh.
+Quy ước placeholder: {{TÊN_HOA}} = trường BẮT BUỘC điền; <chữ-thường> = ví dụ, thay bằng nội dung thật.
+LUẬT VÀNG: KHÔNG "đã bảo mật ✓". Khai vùng phủ. Mỗi finding gắn ≥1 mã OWASP LLM + ≥1 mã web (khi áp dụng).
+-->
+
+## 1. Phạm vi đã rà (declared coverage)
+
+| Vùng | Có rà không | Cơ chế | Ghi chú |
+|---|---|---|---|
+| **A — git-time** (code/doc/secret) | {{CÓ/KHÔNG}} | secret-scan (hook) · doc-injection lint · review OWASP | |
+| **B — CI-time** (dependency/SAST) | {{CÓ/KHÔNG}} | `npm audit`/osv-scanner · Semgrep (point-to-tool) | |
+| **C — production** (pentest/DAST) | **KHÔNG (NON-GOAL)** | chỉ runbook kích hoạt (NT11) | *Review này KHÔNG thay thế pentest / security audit production.* |
+
+## 2. Findings
+
+> Mỗi finding: mô tả rủi ro CỤ THỂ (lộ gì / mất gì / exploit gì) · tier (NT06) · gate · ≥1 mã OWASP LLM + ≥1 mã web. Finding không exploit được / không map khung → bỏ (không phải "cảm giác lỗ hổng").
+
+### F-1 — <tiêu đề ngắn>
+- **Rủi ro**: <kẻ xấu lợi dụng được gì — vd: gửi orderId chứa `' OR 1=1` → đọc đơn của user khác>
+- **OWASP**: LLM05 (improper output handling) · A03 (Injection)
+- **Vùng / gate**: A — review + regression test
+- **Tier (NT06)**: RED (chạm quyền đọc dữ liệu user khác)
+- **Trạng thái**: <open | đã vá tại `<file:line>` + test `<...>` | won't-fix vì <lý do>>
+
+### F-2 — <...>
+- **Rủi ro**: <...>
+- **OWASP**: LLM01 (prompt injection) · A03
+- **Vùng / gate**: A — doc-injection lint chặn tại pre-commit
+- **Tier**: YELLOW
+- **Trạng thái**: <...>
+
+## 3. Cổng máy đã chạy (báo cáo THẬT, không hứa suông)
+
+- [ ] `SEC_CHECKS=auto` bật trong hook; secret-scan trên staged: <kết quả — 0 hit / n hit tại ...>
+- [ ] doc-injection lint trên `docs/app-map/**`+`CLAUDE.md`: <kết quả>
+- [ ] SCA (`npm audit`/osv) ở CI: <n vuln — high/critical bao nhiêu / N/A>
+- [ ] `security-verify.sh --staged` exit 0
+
+## 4. Ngoài phạm vi (nói thẳng)
+
+- **KHÔNG chạy pentest / DAST / red-team** — cần target deploy + authorization + engagement riêng. Nếu {{SCOPE}} là hệ production nhạy cảm → mở runbook NT11 lên lịch pentest ngoài git-loop.
+- **KHÔNG bảo đảm "sạch lỗ hổng"** — bắt lớp shift-left phổ biến; logic-vuln nghiệp vụ + zero-day vẫn cần con người.
+- **Secret từng lộ**: nếu có → đã rotate + xoá lịch sử? <có/không — hook chỉ chặn commit MỚI>.
+
+## 5. History
+- {{YYYY-MM-DD}} — tạo review; <n> findings; vùng phủ A{{✓/✗}} B{{✓/✗}} C=NON-GOAL.

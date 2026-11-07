@@ -1,0 +1,14 @@
+# Junction skill per-machine (ai-simple init) — cam commit: git recurse junction = copy = drift
+.claude/skills/
+
+# env
+.env*
+!.env.example
+
+# build
+node_modules/
+.next/
+*.tsbuildinfo
+test-results/
+playwright-report/
+.vercel
