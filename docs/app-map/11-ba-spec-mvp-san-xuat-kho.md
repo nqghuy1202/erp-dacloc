@@ -23,6 +23,9 @@ ttl_days: 90
 | U4 Thủ kho | nhập kho từ NCC, cấp phát cho trại, kiểm kê | quen | máy tính + điện thoại tại kho |
 | U5 Ban giám đốc | xem tình hình toàn khu, sản lượng, tồn, cảnh báo | quen, đọc là chính | máy tính, điện thoại |
 | U6 Quản trị hệ thống | quản lý trại/bể/loài/giai đoạn, danh mục vật tư, người dùng & quyền | power | máy tính |
+| U7 Trưởng phòng R&D | khai báo loài, giai đoạn, chỉ tiêu và tần suất đo, ngưỡng, lịch mẫu, quy trình sản xuất | quen | máy tính |
+| U8 Trưởng phòng Kỹ thuật | khai báo khu–ao–bể, thiết bị | quen | máy tính + điện thoại tại khu |
+| U9 Phụ trách an toàn sinh học | khai báo bệnh và xét nghiệm, khu sạch–bẩn, khử trùng; chủ các điểm kiểm soát trong quy trình | quen | máy tính |
 | S1 Hệ thống (system-actor) | trừ kho theo nhật ký, sinh cảnh báo ngưỡng, đồng bộ dữ liệu offline | — | nền |
 
 > Đại lý/hộ nuôi, sale, kế toán, nhân sự: ngoài MVP (§7).
@@ -30,7 +33,12 @@ ttl_days: 90
 ## 3. User × Nghiệp vụ
 | # | Nghiệp vụ | Owner-user | Cross | Phụ thuộc NV | Tần suất | Ưu tiên |
 |---|---|---|---|---|---|---|
-| NV0 | Thiết lập danh mục (trại, bể, loài, giai đoạn, ngưỡng nước, vật tư, quyền theo trại) | U6 | U2 | — | thấp | Must |
+| NV0a | Khai báo tổ chức & vị trí (cơ sở, khu–ao–bể, kho, ca/tổ, người dùng & quyền) | U6 | U8 (khu–ao–bể), U4 (kho), U2 (ca/tổ) | — | thấp | Must |
+| NV0b | Khai báo đối tượng nuôi & quy trình (loài, giai đoạn, chỉ tiêu và tần suất đo, ngưỡng, lịch mẫu, quy trình sản xuất) | U7 | U2, U9 (điểm kiểm soát) | NV0a | thấp | Must |
+| NV0c | Khai báo vật tư & nguồn cung (vật tư, nhà cung cấp, định mức, đơn vị tính) | U4 | U2 (định mức), U9 (cờ cấm) | NV0a | thấp | Must |
+| NV0d | Khai báo an toàn sinh học & thiết bị (bệnh và xét nghiệm, khu sạch–bẩn, khử trùng và vệ sinh bể, thiết bị) | U9 | U3 (bệnh/xét nghiệm), U8 (thiết bị) | NV0a | thấp | Must |
+| NV0e | Duyệt khai báo cần phê duyệt (ngưỡng, quy trình, bệnh, khu sạch–bẩn, khử trùng, bỏ cờ cấm) | U5 (mặc định; người duyệt theo NV0f) | U7, U9, U4 (người soạn) | NV0b, NV0c, NV0d, NV0f | khi có thay đổi | Must |
+| NV0f | Khai báo phòng ban & chức vụ, nhân viên, nghiệp vụ (cấp duyệt, điều kiện, đánh số chứng từ) | U6 | U5 (xác nhận người duyệt) | NV0a | thấp | Must |
 | NV1 | Tiếp nhận & cách ly đàn bố mẹ | U2 | U3 (PCR đầu vào), U4 (nhập kho nếu mua) | NV0 | thấp | Must |
 | NV2 | Cho đẻ & thu Nauplius (tạo mẻ) | U2 | U1 | NV1 | hằng ngày | Must |
 | NV3 | Mở lô ương & giao bể | U2 | U1 | NV2 | hằng ngày | Must |
@@ -46,6 +54,7 @@ ttl_days: 90
 | NV13 | Tra cứu truy xuất theo mã QR lô | U5 | — | NV6 | khi cần | Must |
 | NV14 | Lập & duyệt kế hoạch sản xuất (lịch thả/thu lô theo tháng) | U2 | U5 (duyệt) | NV0 | hằng tháng | Must |
 | NV15 | Sinh việc hằng ngày cho bể (lịch theo giai đoạn + việc đột xuất) | S1 | U2 (thêm việc), U1 (thực hiện) | NV3, NV0 | hằng ngày | Must |
+| NV16 | Lệnh sản xuất (mỗi lệnh = một lô × một bước quy trình; tạo từ kế hoạch, duyệt theo NV0f, sinh việc + yêu cầu cấp vật tư) | U2 | người duyệt theo NV0f, U1 (việc), U4 (cấp vật tư) | NV14, NV0b, NV0c, NV0f | hằng ngày | Must |
 
 ## 4. Cross-user handoff map
 | Chặng | Nghiệp vụ | Từ | → Nhận | Điều kiện chuyển | Điểm kết nếu không ai nhận |
@@ -61,15 +70,52 @@ ttl_days: 90
 | H10 | NV14 | U2 (gửi kế hoạch tháng) | U5 | kế hoạch "chờ duyệt" | quá 3 ngày chưa duyệt → nhắc U5; kế hoạch tháng trước vẫn là mốc so sánh |
 | H11 | NV15 | S1 / U2 (tạo việc) | U1 | việc gắn bể mà U1 được giao | việc quá giờ 60 phút chưa làm → hiện "trễ" cho U2 |
 | H9 | NV11 | U4 (biên bản lệch) | U2 | chênh lệch > 2% giá trị dòng | U2 xác nhận nguyên nhân; chưa xác nhận → biên bản "chờ duyệt", tồn chưa điều chỉnh |
+| H12 | NV0b/c/d → NV0e | U7 / U9 / U4 (gửi bản nháp) | người duyệt cấp 1 theo NV0f (mặc định U5) | bản nháp thuộc nhóm cần duyệt, có lý do sửa | quá 3 ngày chưa duyệt → nhắc người duyệt; bản đang hiệu lực giữ nguyên, không có khoảng trống quy tắc |
+| H13 | NV16 | U2 (gửi lệnh) | người duyệt chính hoặc thay của cấp đang chờ (NV0f) | lệnh "chờ duyệt"; điều kiện bỏ qua cấp đã xét | quá 24h chưa duyệt → nhắc người chính + người thay; trả lại → lệnh về "đang lập" cho U2 |
+| H14 | NV16 → NV9, NV15 | S1 (lệnh "đã duyệt") | U4 (yêu cầu cấp theo định mức), U1 (việc của bước) | lệnh đã duyệt; việc chỉ sinh khi lệnh bước trước của lô đã hoàn thành | yêu cầu cấp theo H8; việc trễ theo H11; lệnh quá ngày dự kiến chưa hoàn thành → "trễ" cho U2 |
 
 ## 5. Flows
 
-### Flow NV0 — Thiết lập danh mục · owner: U6
-- **Start**: hệ thống mới / có trại, bể, vật tư mới
-- **Input**: danh sách trại, bể (mã, thể tích, loại bể), loài + chuỗi giai đoạn (tôm thẻ: N→Z1-3→M1-3→PL1…PLn; cá chẽm, tôm hùm cấu hình riêng), ngưỡng chỉ số nước theo loài×giai đoạn, danh mục vật tư (đơn vị, nhóm, cờ "cấm dùng"), người dùng + vai trò + trại được phép; hoặc file Excel import
-- **Steps**: nhập/import → hệ thống kiểm trùng mã + bắt buộc → lưu
-- **Output**: danh mục hiệu lực; dòng import lỗi trả về kèm lý do, dòng hợp lệ vẫn lưu
-- **End**: danh mục dùng được cho NV1–NV11
+### Flow NV0 (NV0a–NV0d) — Khai báo danh mục · owner: theo nhóm (bảng dưới)
+> Ký hiệu "NV0" ở các dòng khác = NV0a–NV0e. Danh sách trang và lý do: [research 03](../research/03-trang-khai-bao.md).
+
+| Nhóm | Trang khai báo | Người soạn/sửa | Cần duyệt (NV0e) |
+|---|---|---|---|
+| A | Cơ sở / địa điểm | U6 | không |
+| A | Khu – ao – bể | U8 | không |
+| A | Kho | U4 | không |
+| A | Ca / tổ sản xuất | U2 | không |
+| A | Phòng ban & chức vụ | U6 | không |
+| A | Nhân viên (hồ sơ gốc: mã, họ tên, phòng ban, chức vụ, cơ sở/trại, ca/tổ) | U6 | không |
+| A | Người dùng & quyền (tài khoản gắn vào nhân viên; thêm vai trò U7–U9) | U6 | không |
+| A | Khai báo nghiệp vụ (cấp duyệt, người duyệt chính + thay, điều kiện bỏ qua/thêm cấp, quy tắc đánh số) | U6 | không (ghi nhật ký; R21 chặn bỏ hết cấp của nhóm ATSH) |
+| B | Loài & giai đoạn | U7 | không |
+| B | Chỉ tiêu theo dõi & tần suất đo | U7 | không |
+| B | Ngưỡng cảnh báo (loài × giai đoạn) | U7 | **có** |
+| B | Lịch mẫu theo giai đoạn | U7 | không |
+| B | Quy trình sản xuất | U7 (điểm kiểm soát ATSH: U9) | **có** |
+| C | Vật tư (nhóm, đơn vị, cờ cấm) | U4 (cờ cấm: U9) | bỏ cờ cấm: **có** |
+| C | Nhà cung cấp | U4 | không |
+| C | Định mức vật tư theo giai đoạn | U2 | không |
+| C | Đơn vị tính & quy đổi | U4 | không |
+| D | Bệnh & chỉ tiêu xét nghiệm | U9 | **có** |
+| D | Khu sạch–bẩn & điểm kiểm soát ra vào | U9 | **có** |
+| D | Hoá chất khử trùng & quy trình vệ sinh bể | U9 | **có** |
+| D | Thiết bị | U8 | không |
+| — | Tổng quan Khai báo (checklist mục còn thiếu) | mọi vai trò có quyền khai báo | — |
+
+- **Start**: hệ thống mới / có cơ sở, bể, vật tư, loài, quy trình mới / Đắc Lộc đổi quy định
+- **Input**: dữ liệu của trang tương ứng. Khu–ao–bể: loại đơn vị nuôi (bể ấu trùng, bể nuôi vỗ, ao thương phẩm, bể tôm hùm, bể ốc, bể cá…), diện tích m² hoặc thể tích m³ và độ sâu theo loại, hệ thống nuôi (RAS, biofloc/Green House, ao đất, lót bạt), khu sạch–bẩn, nguồn nước cấp/thải, vị trí trên sơ đồ khu. Loài + chuỗi giai đoạn (tôm thẻ: N→Z1-3→M1-3→PL1…PLn; cá, ốc, tôm hùm khai riêng). Chỉ tiêu + tần suất đo theo loại đơn vị nuôi. Quy trình: chuỗi bước, đầu vào → đầu ra từng bước, điểm kiểm soát và bằng chứng yêu cầu. Hoặc file Excel/CSV import cho: bể/ao/khu, vật tư + nhà cung cấp + tồn đầu kỳ, thiết bị
+- **Steps**: nhập/import → hệ thống kiểm trùng mã + bắt buộc + định dạng + quyền theo nhóm (R15) → nhóm không cần duyệt: lưu hiệu lực ngay; nhóm cần duyệt: lưu bản nháp và gửi duyệt (H12 → NV0e). Mọi thay đổi ghi nhật ký (ai, gì, lúc nào)
+- **Output**: danh mục hiệu lực; dòng import lỗi trả về kèm lý do, dòng hợp lệ vẫn lưu; trang Tổng quan Khai báo liệt kê mục chưa có bản ghi hiệu lực nào
+- **End**: danh mục dùng được cho NV1–NV11, NV14, NV15
+
+### Flow NV0e — Duyệt khai báo cần phê duyệt · owner: U5
+- **Start**: U7 / U9 / U4 gửi bản nháp của một mục thuộc nhóm cần duyệt (H12)
+- **Input**: bản nháp (giá trị cũ → mới), lý do sửa, bản đang hiệu lực
+- **Steps**: người duyệt từng cấp theo nghiệp vụ "Khai báo cần duyệt" ở NV0f (mặc định 1 cấp: U5) xem khác biệt → duyệt (hiệu lực khi cấp cuối duyệt) hoặc trả lại kèm lý do → bản đã duyệt có phiên bản mới, bản cũ được giữ
+- **Output**: bản "đã duyệt" hiệu lực; lô đang chạy xử lý theo R13 (chặt hơn: áp dụng ngay; nới lỏng: chỉ lô mở sau); trả lại → người soạn sửa và gửi lại
+- **End**: bản "đã duyệt" hoặc "trả lại"; chưa duyệt thì bản cũ vẫn là quy tắc hiệu lực
 
 ### Flow NV1 — Tiếp nhận & cách ly bố mẹ · owner: U2
 - **Start**: đàn bố mẹ về trại (nhập khẩu / mua / tự tuyển)
@@ -169,6 +215,18 @@ ttl_days: 90
 - **Output**: danh sách việc theo bể × giờ của từng công nhân; trạng thái chờ / xong / trễ
 - **End**: hết ngày: việc chưa làm giữ trạng thái "trễ" trong báo cáo, không chuyển sang ngày sau
 
+### Flow NV16 — Lệnh sản xuất · owner: U2
+- **Start**: kế hoạch tháng "đã duyệt" (NV14), hoặc U2 cần lệnh ngoài kế hoạch
+- **Input**: kế hoạch đã duyệt (lô dự kiến: bể, ngày thả, số thả, ngày thu); quy trình sản xuất đã duyệt của loài (các bước, điểm kiểm soát); định mức vật tư theo giai đoạn; quy trình duyệt của nghiệp vụ "Lệnh sản xuất" (NV0f)
+- **Steps**:
+  1. U2 dùng "Tạo lệnh sản xuất tự động" trên kế hoạch → mỗi lô dự kiến sinh chuỗi lệnh theo mọi bước của quy trình (thả → chuyển giai đoạn → thu hoạch), ngày dự kiến tính từ kế hoạch, trạng thái **"đang lập"**; bấm lại không tạo trùng (R24). Lệnh ngoài kế hoạch: U2 tạo tay, đánh dấu "ngoài kế hoạch"
+  2. U2 chỉnh ngày/số lượng → gửi duyệt (H13); mã lệnh tự sinh theo quy tắc đánh số (R23)
+  3. Duyệt tuần tự theo các cấp đã khai (người chính hoặc người thay); điều kiện bỏ qua/thêm cấp áp lúc gửi; trả lại → "đang lập"
+  4. Lệnh "đã duyệt" → S1 tạo yêu cầu cấp vật tư = định mức × số lượng × số ngày của bước (H14 → NV9); khi lệnh bước trước của lô hoàn thành, lệnh chuyển "đang thực hiện" và sinh việc cho công nhân của bể (H14 → NV15, R25)
+  5. U2 xác nhận kết quả: số thực, ngày thực; điểm kiểm soát của bước phải đạt (R18); lệch số lượng vượt ngưỡng cần lý do (R26)
+- **Output**: lệnh "hoàn thành" gắn lô + bước + số thực; yêu cầu cấp và việc truy được về lệnh; nhật ký của bể trong thời gian lệnh gắn với lệnh
+- **End**: "hoàn thành", "huỷ" (chưa thực hiện, có lý do; yêu cầu cấp chưa cấp bị huỷ) hoặc "đóng" (đã thực hiện dở, có lý do) — R27
+
 ### Flow NV13 — Truy xuất theo QR · owner: U5
 - **Start**: có mã QR/mã lô thành phẩm
 - **Input**: mã lô
@@ -189,10 +247,14 @@ ttl_days: 90
 | NV15 | A: trưởng trại giao việc thủ công · B: lịch tự sinh · C: tự sinh + việc đột xuất | Chọn C (user chốt) | A tạo việc lặp cho trưởng trại (rubric #5); B thiếu xử lý sự cố | Optimizer + user | — |
 | NV11 | A: điều chỉnh tồn ngay khi nhập số thực · B: lệch > 2% cần duyệt | Chọn B | Chống che thất thoát; lệch nhỏ không tạo việc thừa (rubric #4 cross tối thiểu) | Optimizer | — |
 | NV9 | A: trưởng trại tự xuất kho tổng · B: thủ kho cấp phát | Chọn B | Tách người yêu cầu / người xuất (kiểm soát nội bộ) | Domain-Specialist (kho) | — |
+| NV0 | A: chỉ admin sửa mọi khai báo · B: sửa theo phòng ban · C: admin + trưởng phòng kỹ thuật | Chọn B (user chốt) | Chuyên môn nằm ở R&D, Kỹ thuật, ATSH; admin không phải người chịu trách nhiệm ngưỡng hay quy trình (rubric #1 định hướng owner) | Optimizer + user | — |
+| NV16 | Đối tượng: A lô × bước quy trình · B bể theo khoảng thời gian · C đợt nhiều bể. Nguồn: A nút tạo tự động từ kế hoạch · B tạo tay. Kho: A tạo yêu cầu cấp theo định mức · B chỉ hiển thị · C xuất kho ngay | Chọn lô × bước, nút tạo tự động ("đang lập"), tạo yêu cầu cấp (user chốt) | Lô × bước để điểm kiểm soát ATSH chặn ngay ở lệnh; yêu cầu cấp giữ tách người yêu cầu / người xuất (NV9); xuất ngay bỏ qua kiểm soát kho | Optimizer + Domain-Specialist (kho) + user | — |
+| NV0f | Người duyệt theo: A chức vụ · B nhân viên cụ thể · C vai trò hệ thống | Chọn B + người thay mỗi cấp (user chốt) | B rõ trách nhiệm; người thay tránh chứng từ kẹt khi nghỉ (rubric #3 không dead-end) | Optimizer + user | — |
+| NV0e | A: sửa có hiệu lực ngay, chỉ ghi nhật ký · B: bản nháp + duyệt cho nhóm ATSH, ngưỡng, quy trình · C: không cần cho demo | Chọn B (user chốt) | Ưu tiên 1 là an toàn sinh học và cần hồ sơ GlobalGAP; A để một lần sửa nới ngưỡng có hiệu lực không dấu vết duyệt (rubric #3 không dead-end ở người nhận, #6 đo được) | Domain-Specialist (ATSH) + user | veto A cho nhóm ATSH |
 
 ## 7. Scope & Priority
-- **IN (MVP)**: NV0–NV15; loài: tôm thẻ chân trắng đầy đủ; cá chẽm, tôm hùm qua cấu hình giai đoạn (cùng flow); song ngữ Việt/Anh; offline cho NV4; phân quyền theo trại + vai trò; cảnh báo trong app; import Excel danh mục + tồn đầu kỳ.
-- **OUT (phase sau)**: bán hàng/đặt giống, cổng đại lý-hộ nuôi, công nợ, kế toán (Đắc Lộc đang dùng Vietsun: hướng mặc định là xuất dữ liệu sang Vietsun, không thay thế — chờ xác nhận), nhân sự-lương, nuôi thương phẩm/thu mua, ốc giống, kết nối IoT (chỉ chừa điểm nhận dữ liệu; họp nêu nhu cầu tự động hoá, chờ xác nhận có đưa vào phase 1), Zalo/SMS, đơn mua hàng NCC (MVP chỉ ghi phiếu nhập).
+- **IN (MVP)**: NV0a–NV0f (khai báo đủ cho 4 mảng: tôm giống, cá + ốc giống, tôm thương phẩm, tôm hùm; nhân viên, phòng ban, quy trình duyệt theo nghiệp vụ), NV1–NV16; vận hành đầy đủ cho tôm thẻ chân trắng; cá chẽm, tôm hùm, ốc hương, tôm sú qua cấu hình giai đoạn (cùng flow lô); song ngữ Việt/Anh; offline cho NV4; phân quyền theo trại + vai trò; cảnh báo trong app; import Excel danh mục + tồn đầu kỳ.
+- **OUT (phase sau)**: bán hàng/đặt giống, cổng đại lý-hộ nuôi, công nợ, kế toán (Đắc Lộc đang dùng Vietsun: hướng mặc định là xuất dữ liệu sang Vietsun, không thay thế — chờ xác nhận), nhân sự-lương, vận hành nuôi thương phẩm/tôm hùm/ốc giống (khai báo đã IN; chạy vận hành ở P2–P3), thu mua, cửa hàng thức ăn, vận tải, khách hàng/đại lý, mã kế toán Vietsun, kết nối IoT (chỉ chừa điểm nhận dữ liệu; họp nêu nhu cầu tự động hoá, chờ xác nhận có đưa vào phase 1), Zalo/SMS, đơn mua hàng NCC (MVP chỉ ghi phiếu nhập).
 
 ## 8. Success metric
 | Nghiệp vụ | Metric | Ngưỡng đạt |
@@ -207,6 +269,11 @@ ttl_days: 90
 | NV12 | dữ liệu tổng quan trễ so với nhật ký | ≤ 5 phút |
 | NV14 | trại có kế hoạch tháng đã duyệt trước ngày 1 | 14/14 trại |
 | NV15 | việc hằng ngày hoàn thành đúng giờ (±60 phút) | ≥ 90% |
+| NV0 | mục bắt buộc còn thiếu ở trang Tổng quan Khai báo trước buổi demo | 0 |
+| NV0e | thay đổi ngưỡng/quy trình/ATSH có hiệu lực mà chưa qua duyệt | 0 |
+| NV0e | bản nháp chờ duyệt > 3 ngày | ≤ 5% |
+| NV16 | lệnh hoàn thành đúng ngày dự kiến (±1 ngày) | ≥ 90% |
+| NV16 | lệnh đã duyệt có yêu cầu cấp được cấp trước ngày bắt đầu bước | ≥ 95% |
 
 ## 9. Rules & Invariants
 | # | Rule | Edge case |
@@ -223,6 +290,21 @@ ttl_days: 90
 | R11 | Chỉ kế hoạch "đã duyệt" mới là mốc so sánh; sửa kế hoạch đã duyệt tạo phiên bản mới cần duyệt lại | chưa có kế hoạch tháng → tổng quan hiện "Chưa có kế hoạch", không tính % |
 | R12 | Việc tự sinh không trùng: mỗi (lô, loại việc, khung giờ) tối đa 1 việc | lô chuyển giai đoạn giữa ngày → việc còn lại theo lịch giai đoạn mới |
 | R10 | Phiếu đã chốt (xét nghiệm, nhập, kiểm kê) không sửa; chỉ huỷ có lý do + người huỷ | huỷ phiếu nhập đã cấp phát một phần → chặn, phải điều chỉnh bằng giao dịch ngược |
+| R13 | Khai báo thuộc nhóm cần duyệt (ngưỡng, quy trình, bệnh và xét nghiệm, khu sạch–bẩn, khử trùng, bỏ cờ cấm) chỉ có hiệu lực sau khi cấp duyệt cuối (NV0f; mặc định U5) duyệt; sửa bản đã duyệt tạo phiên bản mới, bản cũ giữ để truy xuất | thay đổi chặt hơn (thêm bệnh bắt buộc, thêm điểm kiểm soát, nâng mức khu, thu hẹp ngưỡng) áp dụng ngay cho mọi lô sau khi duyệt; nới lỏng chỉ áp cho lô mở sau ngày hiệu lực; **đặt** cờ cấm có hiệu lực ngay (R7) |
+| R14 | Mục danh mục đã được tham chiếu (bể có lô, vật tư có giao dịch, nhà cung cấp có phiếu, loài có lô) không xoá; chỉ "ngừng sử dụng": không hiện ở lựa chọn mới, vẫn hiện ở lịch sử và truy xuất | ngừng bể đang có lô đang ương → chặn |
+| R15 | Mỗi trang khai báo chỉ vai trò được giao (bảng ở Flow NV0) mới sửa được; vai trò khác chỉ xem | phòng chưa có người phụ trách → U6 gán vai trò đó cho một người; không có vai trò "sửa tất cả" |
+| R16 | Bể ở trạng thái chờ vệ sinh không nhận lô mới | bể về chờ vệ sinh sau thu hoạch hoặc huỷ lô (AC-13) |
+| R17 | Không chuyển lô từ bể ở khu có mức an toàn thấp sang bể ở khu mức cao hơn | khu chưa khai mức → coi là thấp nhất (chặn chuyển lên) |
+| R18 | Bước quy trình có điểm kiểm soát không hoàn tất được khi thiếu bằng chứng yêu cầu (vd phiếu PCR âm còn hiệu lực) | bằng chứng bị huỷ sau khi bước đã qua → không hồi tố, cảnh báo U2 và U9 |
+| R19 | Loài chỉ dùng được khi có ≥ 1 giai đoạn có ngưỡng đã duyệt | bỏ hết giai đoạn của loài đang có lô → chặn |
+| R20 | Tần suất đo khai báo theo chỉ tiêu × loại đơn vị nuôi; S1 sinh việc theo đó (R12 giữ) | chỉ tiêu chưa khai tần suất → dùng lịch mẫu của giai đoạn (AC-23) |
+| R21 | Mỗi nghiệp vụ có quy trình duyệt khai ở NV0f: 0..n cấp tuần tự; mỗi cấp một người duyệt chính + một người thay (nhân viên cụ thể), ai trong hai người duyệt cũng được; người tạo chứng từ không tự duyệt chứng từ của mình | ngừng nhân viên đang là người duyệt mà cấp đó không còn người hoạt động nào → chặn tới khi thay người; nghiệp vụ "Khai báo cần duyệt" (NV0e) phải có ≥ 1 cấp |
+| R22 | Sửa quy trình duyệt chỉ áp cho chứng từ gửi duyệt sau đó | chứng từ đang chờ giữ quy trình lúc gửi, kể cả người duyệt cũ (người thay của cấp đó vẫn duyệt được) |
+| R23 | Mã chứng từ tự sinh theo quy tắc đánh số của nghiệp vụ, duy nhất, không tái sử dụng kể cả khi huỷ | đổi quy tắc giữa kỳ → mã đã cấp giữ nguyên |
+| R24 | "Tạo lệnh sản xuất tự động" chỉ chạy với kế hoạch "đã duyệt"; mỗi (lô dự kiến, bước) tối đa 1 lệnh chưa huỷ | kế hoạch có phiên bản mới (R11) bỏ một lô → lệnh "đang lập" của lô đó đánh dấu "lệch kế hoạch", không tự huỷ |
+| R25 | Lệnh chỉ sinh việc và tạo yêu cầu cấp khi "đã duyệt"; lệnh bước n chỉ "đang thực hiện" khi lệnh bước n−1 của cùng lô "hoàn thành" | lệnh bước trước bị "đóng" → bước sau chờ U2 quyết định huỷ hoặc thực hiện |
+| R26 | Hoàn thành lệnh cần số thực + ngày thực; điểm kiểm soát của bước đạt (R18); lệch số lượng so với lệnh > ngưỡng (mặc định 10%) bắt buộc lý do | lệnh quá ngày dự kiến chưa hoàn thành → trạng thái "trễ" cho U2 |
+| R27 | Sửa lệnh đã duyệt → về "chờ duyệt" từ cấp 1, yêu cầu cấp chưa cấp của lệnh huỷ và tạo lại khi duyệt xong; huỷ chỉ khi lệnh chưa "đang thực hiện", có lý do, huỷ phần chưa cấp của yêu cầu cấp | vật tư đã cấp giữ ở kho trại; lệnh đang thực hiện chỉ "đóng" kèm lý do |
 
 ## 10. Acceptance Criteria — ORACLE
 
@@ -370,6 +452,174 @@ ttl_days: 90
 - **Then** việc xuất hiện trong danh sách hôm nay của Trần Thị B và không xuất hiện cho công nhân khác
 - **Assert** count(tasks hôm nay của Trần Thị B, title="Đo lại pH") == 1 · count(cho công nhân khác) == 0
 
+### AC-25 — Khu–ao–bể khai đúng đo đạc theo loại · Maps to: NV0a · Test: integration
+- **Given** loại đơn vị "ao thương phẩm" yêu cầu diện tích m²; loại "bể ấu trùng" yêu cầu thể tích m³
+- **When** U8 tạo ao AO-01 không có diện tích, rồi tạo lại AO-01 với 5.000 m²
+- **Then** lần đầu bị từ chối, lần hai được lưu
+- **Assert** lần 1: error == "invalid_input" · sau lần 2: count(đơn vị code="AO-01") == 1 · area_m2 == 5000
+
+### AC-26 — Mã trùng bị từ chối ở mọi trang khai báo · Maps to: NV0a, NV0c, NV0d · Test: integration
+- **Given** nhà cung cấp mã "NCC-01" đã có
+- **When** U4 thêm nhà cung cấp khác với mã "ncc-01"
+- **Then** thao tác bị từ chối, không tạo bản ghi
+- **Assert** error == "duplicate_code" · count(nhà cung cấp, mã không phân biệt hoa thường = "NCC-01") == 1
+
+### AC-27 — Mục đang được dùng chỉ ngừng sử dụng, không xoá · Maps to: NV0c · Test: integration
+- **Given** vật tư X có 1 phiếu nhập đã chốt
+- **When** U4 xoá X, rồi ngừng sử dụng X
+- **Then** xoá bị từ chối; sau khi ngừng, X không có trong lựa chọn của phiếu nhập mới nhưng phiếu cũ và truy xuất vẫn thấy X
+- **Assert** xoá: error == "in_use" · material.active == false · count(X trong lựa chọn phiếu nhập mới) == 0 · count(phiếu nhập cũ tham chiếu X) == 1
+
+### AC-28 — Quyền khai báo theo phòng ban · Maps to: NV0 · Test: e2e (role matrix)
+- **Given** U8 (Kỹ thuật) và U7 (R&D) đã đăng nhập; bể B-03 thể tích 20 m³
+- **When** U8 sửa ngưỡng pH (thuộc R&D); U8 sửa thể tích B-03 thành 25 m³ (thuộc Kỹ thuật); U7 sửa thể tích B-03 thành 30 m³
+- **Then** chỉ thao tác đúng nhóm được chấp nhận
+- **Assert** U8 sửa ngưỡng: status == 403 · U8 sửa B-03: status == 200 · U7 sửa B-03: status == 403 · B-03.volume_m3 == 25 · count(nhật ký thay đổi của B-03) == 1
+
+### AC-29 — Sửa ngưỡng tạo bản nháp, chỉ hiệu lực sau duyệt · Maps to: NV0e · Test: integration
+- **Given** ngưỡng pH tôm thẻ Mysis đã duyệt 7,5–8,5
+- **When** U7 sửa thành 7,8–8,3 và gửi duyệt; U1 ghi pH 7,6 vào bể Mysis; sau đó U5 duyệt và U1 ghi pH 7,6 vào lô mở sau ngày hiệu lực
+- **Then** trước duyệt không có cảnh báo; sau duyệt có đúng 1 cảnh báo
+- **Assert** trước duyệt: ngưỡng hiệu lực == [7,5; 8,5] · count(alerts "water_out_of_range") == 0 · sau duyệt: ngưỡng hiệu lực == [7,8; 8,3] · count(alerts "water_out_of_range") == 1
+
+### AC-30 — Thêm bệnh bắt buộc áp dụng ngay cho lô đang chạy · Maps to: NV0d · Test: integration
+- **Given** loài tôm thẻ bắt buộc 5 bệnh; lô L-100 có phiếu PCR âm tính chốt hôm qua cho đủ 5 bệnh
+- **When** U9 thêm bệnh "NHPV" vào danh sách bắt buộc, U5 duyệt, rồi U2 thu hoạch L-100
+- **Then** thu hoạch bị từ chối vì thiếu kết quả NHPV
+- **Assert** error == "pcr_missing_disease" · detail.disease == "NHPV" · count(finished_lots từ L-100) == 0
+
+### AC-31 — Bể chờ vệ sinh không nhận lô mới · Maps to: NV3 · Test: integration
+- **Given** bể B-05 ở trạng thái "chờ vệ sinh"
+- **When** U2 mở lô mới vào B-05
+- **Then** thao tác bị từ chối
+- **Assert** error == "tank_not_ready" · count(lots status="rearing" và tank="B-05") == 0
+
+### AC-32 — Không chuyển lô từ khu bẩn sang khu sạch · Maps to: NV0d · Test: integration
+- **Given** khu K-BAN mức an toàn 1 và K-SACH mức 3 (đã duyệt); lô L-200 ở bể thuộc K-BAN
+- **When** U2 chuyển L-200 sang bể thuộc K-SACH
+- **Then** thao tác bị từ chối, lô vẫn ở bể cũ
+- **Assert** error == "zone_level_blocked" · lot(L-200).tank == bể cũ · count(chuyển bể mới của L-200) == 0
+
+### AC-33 — Bước quy trình có điểm kiểm soát thiếu bằng chứng bị chặn · Maps to: NV0b · Test: integration
+- **Given** quy trình tôm thẻ có bước "Chuyển sang ương PL" yêu cầu phiếu PCR âm tính chốt trong 3 ngày; lô L-300 chưa có phiếu nào
+- **When** U2 hoàn tất bước này cho L-300
+- **Then** thao tác bị từ chối, bước giữ trạng thái chưa hoàn tất
+- **Assert** error == "control_point_unmet" · detail.evidence == "pcr_negative" · step.status == "pending"
+
+### AC-34 — Nới lỏng quy trình chỉ áp cho lô mở sau · Maps to: NV0e · Test: integration
+- **Given** quy trình P phiên bản 1 đã duyệt; lô L-400 đã mở theo phiên bản 1
+- **When** U7 bỏ một bước kiểm trong P thành phiên bản 2, U5 duyệt, rồi U2 mở lô L-401
+- **Then** L-400 vẫn theo phiên bản 1, L-401 theo phiên bản 2, phiên bản 1 được giữ
+- **Assert** lot(L-400).process_version == 1 · lot(L-401).process_version == 2 · count(phiên bản của P) == 2
+
+### AC-35 — Tần suất đo theo từng chỉ tiêu · Maps to: NV0b, NV15 · Test: unit
+- **Given** chỉ tiêu độ mặn khai "1 lần/tuần" và pH khai "1 lần/ngày" cho loại đơn vị nuôi của lô L-100
+- **When** S1 sinh việc cho 7 ngày liên tiếp
+- **Then** L-100 có đúng 1 việc đo độ mặn và 7 việc đo pH
+- **Assert** count(tasks L-100, param="salinity", 7 ngày) == 1 · count(tasks L-100, param="ph", 7 ngày) == 7
+
+### AC-36 — Loài chưa cấu hình không mở được lô · Maps to: NV0b, NV3 · Test: integration
+- **Given** loài "Ốc hương" mới thêm, chưa có giai đoạn nào
+- **When** U2 mở lô cho loài này
+- **Then** thao tác bị từ chối
+- **Assert** error == "species_not_configured" · count(lots của loài này) == 0
+
+### AC-37 — Tổng quan Khai báo chỉ ra mục còn thiếu · Maps to: NV0 · Test: e2e
+- **Given** hệ thống đã có 2 cơ sở và chưa có kho nào
+- **When** U6 mở trang Tổng quan Khai báo
+- **Then** mục Cơ sở báo đủ, mục Kho báo thiếu
+- **Assert** completeness.sites: count == 2 và status == "ok" · completeness.warehouses: count == 0 và status == "missing"
+
+### AC-38 — Tạo lệnh tự động từ kế hoạch không trùng · Maps to: NV16 · Test: integration
+- **Given** kế hoạch tháng 12 trại T4 "đã duyệt" có 2 lô dự kiến; quy trình tôm thẻ đã duyệt có 3 bước (thả, chuyển PL, thu hoạch)
+- **When** U2 dùng "Tạo lệnh sản xuất tự động" 2 lần liên tiếp
+- **Then** có đúng 6 lệnh, tất cả ở trạng thái đang lập
+- **Assert** sau lần 1: count(lệnh của kế hoạch) == 6 và mọi status == "drafting" · sau lần 2: count == 6
+
+### AC-39 — Kế hoạch chưa duyệt không tạo được lệnh · Maps to: NV16 · Test: integration
+- **Given** kế hoạch tháng 12 trại T4 đang "chờ duyệt"
+- **When** U2 dùng "Tạo lệnh sản xuất tự động"
+- **Then** thao tác bị từ chối
+- **Assert** error == "plan_not_approved" · count(lệnh của kế hoạch) == 0
+
+### AC-40 — Duyệt nhiều cấp với điều kiện bỏ qua · Maps to: NV16, NV0f · Test: integration
+- **Given** nghiệp vụ "Lệnh sản xuất": cấp 1 Nguyễn Văn A, cấp 2 Trần Văn B; điều kiện: lệnh trong kế hoạch đã duyệt bỏ qua cấp 2
+- **When** U2 gửi lệnh L1 (trong kế hoạch) và L2 (ngoài kế hoạch); A duyệt cả hai
+- **Then** L1 đã duyệt; L2 chờ cấp 2
+- **Assert** L1.status == "approved" · L2.status == "pending_approval" và L2.current_level == 2
+
+### AC-41 — Chỉ người chính hoặc người thay của cấp mới duyệt được · Maps to: NV0f · Test: e2e
+- **Given** cấp 1 của "Lệnh sản xuất": chính Nguyễn Văn A, thay Lê Thị C; lệnh L3 chờ cấp 1, do Phạm Văn D tạo
+- **When** D duyệt L3; rồi C duyệt L3
+- **Then** D bị từ chối; C duyệt thành công
+- **Assert** lần D: status == 403 · lần C: status == 200 · count(lượt duyệt của L3) == 1 và approver == C
+
+### AC-42 — Duyệt lệnh tạo yêu cầu cấp theo định mức · Maps to: NV16 · Test: integration
+- **Given** định mức giai đoạn Zoea: thức ăn X 0,2 kg / triệu con / ngày; lệnh bước Zoea của L-100: 2.000.000 con, 3 ngày, trại T4
+- **When** lệnh được duyệt ở cấp cuối
+- **Then** một yêu cầu cấp chờ cấp được tạo cho kho trại T4, gắn lệnh
+- **Assert** count(requests status="pending", order=lệnh) == 1 · qty(X) == 1,2
+
+### AC-43 — Lệnh đã duyệt sinh việc cho công nhân của bể · Maps to: NV16 · Test: integration
+- **Given** lệnh "Chuyển L-100 sang PL" ngày 20/12 đã duyệt; lệnh bước trước của L-100 đã hoàn thành; bể B-03 giao cho Trần Thị B
+- **When** S1 sinh việc ngày 20/12
+- **Then** Trần Thị B có 1 việc gắn lệnh; công nhân khác không có
+- **Assert** count(tasks order=lệnh, assignee="Trần Thị B") == 1 · count(tasks order=lệnh, assignee khác) == 0
+
+### AC-44 — Lệnh bước sau chưa thực hiện khi bước trước chưa xong · Maps to: NV16 · Test: integration
+- **Given** lệnh bước "thả" của L-100 ở trạng thái đang thực hiện; lệnh bước "chuyển PL" đã duyệt
+- **When** S1 sinh việc ngày dự kiến của bước "chuyển PL"
+- **Then** không có việc nào của bước "chuyển PL"
+- **Assert** lệnh chuyển PL status == "approved" (không phải "in_progress") · count(tasks order=lệnh chuyển PL) == 0
+
+### AC-45 — Hoàn thành lệnh lệch lớn cần lý do · Maps to: NV16 · Test: integration
+- **Given** lệnh thu hoạch L-101 dự kiến 700.000 con; ngưỡng lệch 10%; PCR âm còn hiệu lực
+- **When** U2 xác nhận số thực 600.000 không ghi lý do; rồi xác nhận lại kèm lý do
+- **Then** lần đầu bị từ chối; lần hai lệnh hoàn thành
+- **Assert** lần 1: error == "deviation_reason_required" và status != "done" · lần 2: status == "done" · actual_qty == 600000
+
+### AC-46 — Huỷ lệnh huỷ phần chưa cấp của yêu cầu cấp · Maps to: NV16 · Test: integration
+- **Given** lệnh đã duyệt, chưa thực hiện; yêu cầu cấp 1,2 kg X đã cấp 0,5 kg
+- **When** U2 huỷ lệnh kèm lý do
+- **Then** lệnh huỷ; phần 0,7 kg còn lại không còn chờ cấp; 0,5 kg đã cấp vẫn ở kho trại
+- **Assert** order.status == "cancelled" · count(requests pending của lệnh) == 0 · stock(trại, X) tăng == 0,5 (không đổi)
+
+### AC-47 — Lệnh đang thực hiện không huỷ được · Maps to: NV16 · Test: integration
+- **Given** lệnh "đang thực hiện"
+- **When** U2 huỷ lệnh
+- **Then** thao tác bị từ chối; lệnh chỉ "đóng" được kèm lý do
+- **Assert** error == "order_in_progress" · order.status == "in_progress"
+
+### AC-48 — Sửa lệnh đã duyệt quay lại duyệt · Maps to: NV16 · Test: integration
+- **Given** lệnh đã duyệt có yêu cầu cấp 1,2 kg X chưa cấp
+- **When** U2 sửa số lượng của lệnh
+- **Then** lệnh về chờ duyệt từ cấp 1; yêu cầu cấp cũ bị huỷ
+- **Assert** order.status == "pending_approval" và current_level == 1 · count(requests pending của lệnh) == 0
+
+### AC-49 — Mã chứng từ theo quy tắc, không tái sử dụng · Maps to: NV0f · Test: unit
+- **Given** quy tắc đánh số lệnh "LSX-{YYMM}-{####}"; mã lớn nhất tháng 12/2026 là LSX-2612-0007
+- **When** tạo một lệnh, huỷ nó, rồi tạo thêm một lệnh
+- **Then** hai lệnh nhận hai mã liên tiếp, mã đã huỷ không dùng lại
+- **Assert** mã 1 == "LSX-2612-0008" · mã 2 == "LSX-2612-0009"
+
+### AC-50 — Không ngừng được người duyệt duy nhất còn hoạt động · Maps to: NV0f · Test: integration
+- **Given** cấp 1 của "Khai báo cần duyệt": chính Nguyễn Văn A, chưa có người thay
+- **When** U6 ngừng nhân viên A
+- **Then** thao tác bị từ chối cho tới khi cấp 1 có người hoạt động khác
+- **Assert** error == "sole_approver" · employee(A).active == true
+
+### AC-51 — Sửa quy trình duyệt chỉ áp chứng từ gửi sau · Maps to: NV0f · Test: integration
+- **Given** lệnh L4 đang chờ cấp 1 (1 cấp); nghiệp vụ "Lệnh sản xuất" được sửa thành 2 cấp
+- **When** người duyệt cấp 1 duyệt L4; U2 gửi lệnh L5 mới, cấp 1 duyệt L5
+- **Then** L4 đã duyệt sau 1 cấp; L5 chờ cấp 2
+- **Assert** L4.status == "approved" · L5.status == "pending_approval" và L5.current_level == 2
+
+### AC-52 — Mỗi nhân viên tối đa một tài khoản · Maps to: NV0f · Test: integration
+- **Given** nhân viên NV-120 đã có tài khoản đăng nhập
+- **When** U6 tạo thêm một tài khoản cho NV-120
+- **Then** thao tác bị từ chối
+- **Assert** error == "account_exists" · count(tài khoản của NV-120) == 1
+
 ## 11. Assumptions / Open questions
 - **Assumptions**:
   - Quy trình theo chuẩn ngành trại giống tôm thẻ (chưa có SOP Đắc Lộc); chuỗi giai đoạn, ngưỡng nước, danh sách bệnh PCR là cấu hình, giá trị mặc định do chuyên gia trại điền lúc NV0.
@@ -380,9 +630,24 @@ ttl_days: 90
   - Số thu dự kiến trong kế hoạch = số thả × tỷ lệ sống chuẩn (cấu hình theo loài, mặc định 60% cho tôm thẻ tới PL12).
   - Lịch mẫu cho ăn / đo nước theo loài×giai đoạn do chuyên gia trại điền ở NV0.
   - Lô Green House được xử lý như một lô ương ở giai đoạn PL tiếp theo, kế thừa nguồn gốc.
+  - (v4, 2026-11-13) Phân quyền khai báo theo phòng ban: user chốt nguyên tắc "theo phòng ban"; việc gán từng trang cho từng vai trò (bảng ở Flow NV0) là đề xuất mặc định, chưa được xác nhận từng dòng. Chỉ tiêu/tần suất và lịch mẫu giao U7; đơn vị tính giao U4.
+  - Người duyệt khai báo là U5 (BGĐ); nhóm cần duyệt gồm ngưỡng, quy trình, bệnh và xét nghiệm, khu sạch–bẩn, khử trùng, bỏ cờ cấm. Chưa xác nhận ai duyệt; thiên về chặn: chưa duyệt thì bản cũ vẫn hiệu lực.
+  - Thay đổi chặt hơn áp dụng ngay cho mọi lô sau khi duyệt, nới lỏng chỉ áp cho lô mở sau (R13); đặt cờ cấm có hiệu lực ngay. Đây là mặc định an toàn theo ưu tiên ATSH, chờ Đắc Lộc xác nhận.
+  - Ba ca chặn thật cho ATSH ở demo: bể chờ vệ sinh không nhận lô (R16), không chuyển lô từ khu mức thấp lên mức cao (R17), điểm kiểm soát trong quy trình (R18). Do dự án chọn, chưa qua SOP Đắc Lộc. Mức an toàn của khu là thang thứ tự 1 (thấp) → n (cao).
+  - Mọi khai báo ghi nhật ký thay đổi (ai, gì, lúc nào) — mặc định an toàn, cũng là hồ sơ GlobalGAP.
+  - Loài mẫu thêm vào dữ liệu khai báo: ốc hương (giả định, chưa xác nhận), tôm sú, tôm hùm bông, tôm hùm xanh; loài "Tôm hùm" cũ giữ nếu còn lô tham chiếu (R14). Chuỗi giai đoạn, ngưỡng, lịch của loài mới là dữ liệu mẫu giả định, không dùng làm AC.
+  - Trạng thái "chờ vệ sinh" ở AC-31 và R16 chính là `cleaning` trong schema (AC-13 viết `empty_cleaning`); luồng đưa bể về trống sau vệ sinh viết ở NV17 khi có SOP.
+  - Hệ thống nuôi, nguồn nước và vị trí trên sơ đồ khu chỉ là thuộc tính khai báo; cách hiển thị sơ đồ thuộc design-spec.
+  - Định mức vật tư theo giai đoạn: dùng để tính yêu cầu cấp của lệnh (NV16, AC-42); cảnh báo tiêu hao thực vượt định mức chưa có hành vi.
+  - (v5) Ba trang Phòng ban & chức vụ, Nhân viên, Khai báo nghiệp vụ do U6 soạn. Thời hạn nhắc duyệt giữ cố định (24h lệnh, 3 ngày kế hoạch/khai báo) vì user không chọn cấu hình thời hạn.
+  - (v5) Người tạo không tự duyệt chứng từ của mình (R21) và ngưỡng lệch hoàn thành lệnh mặc định 10% (R26): mặc định an toàn, chưa được xác nhận.
+  - (v5) Các duyệt cố định hiện có (kế hoạch NV14 → U5, kiểm kê lệch NV11 → U2) trở thành nghiệp vụ trong Khai báo nghiệp vụ với cấu hình mặc định bằng hành vi hiện tại, nên AC-18, AC-21 không đổi.
+  - (v5) Lệnh "đang lập" là trạng thái đầu (user chọn tên này thay cho "nháp").
+  - Chưa có trường mã kế toán Vietsun (user chọn "chưa làm").
 - **Open (RED — chờ user)**: không có.
 - **Open (chờ Đắc Lộc xác nhận, không chặn MVP)** — theo họp 2026-11, chi tiết [research 02](../research/02-hop-dac-loc-2026-11.md):
-  - An toàn sinh học là ưu tiên 1: đề xuất NV16 vệ sinh–khử trùng bể, NV17 truy vết và phong toả khi dương tính, NV18 ra vào khu an toàn sinh học; chưa viết AC vì cần SOP thật (Q1).
+  - An toàn sinh học là ưu tiên 1: đề xuất NV17 vệ sinh–khử trùng bể (đóng vòng "chờ vệ sinh" → trống), NV18 truy vết và phong toả khi dương tính, NV19 ra vào khu an toàn sinh học; chưa viết AC vì cần SOP thật (Q1). (Đánh số lại so với research 02 vì NV16 dành cho lệnh sản xuất.) Phần khai báo của chúng (khu sạch–bẩn, khử trùng) đã nằm ở NV0d.
+  - Handoff cho design-spec: 21 màn khai báo + màn Lệnh sản xuất (danh sách ở [research 03](../research/03-trang-khai-bao.md)); chưa thêm vào design-spec 12.
   - Tần suất ghi theo từng chỉ tiêu: độ mặn + thay nước hằng tuần, còn lại hằng ngày; cần loại ghi "thay nước" ở NV4 và sửa lịch mẫu AC-23 (Q3).
   - Kế toán Vietsun: phạm vi trao đổi dữ liệu (Q2). Ốc giống và cá giống: loài, giai đoạn (Q4). Tăng trưởng/FCR (Q8). Quản lý thiết bị/bảo trì (Q6).
 
@@ -390,7 +655,9 @@ ttl_days: 90
 - v1 (2026-11-07): khởi tạo — MVP Sản xuất giống + Kho, 14 nghiệp vụ, 20 AC.
 - v2 (2026-11-07): thêm NV14 kế hoạch sản xuất (trưởng trại lập, BGĐ duyệt) và NV15 việc hằng ngày (tự sinh + đột xuất) theo quyết định UI vòng 2 (docs/research/01); AC-21..24.
 - v3 (2026-11-13): ghi nhận họp Đắc Lộc — cập nhật phạm vi OUT (Vietsun, ốc giống, IoT) và danh sách Open; chưa đổi NV/AC.
+- v4 (2026-11-13): tách NV0 thành NV0a–NV0e (18 trang khai báo cho 4 mảng, quyền theo phòng ban, bản nháp + duyệt cho nhóm ATSH); thêm U7–U9, H12, R13–R20, AC-25..37; NV16 Lệnh sản xuất ghi ở Open. AC-1..24 và AC-23 không đổi.
+- v5 (2026-11-13): viết NV16 Lệnh sản xuất (lô × bước quy trình, tạo tự động từ kế hoạch ở trạng thái "đang lập", duyệt theo nghiệp vụ, sinh việc + yêu cầu cấp theo định mức); thêm NV0f (phòng ban & chức vụ, nhân viên, khai báo nghiệp vụ với cấp duyệt theo nhân viên cụ thể + người thay, điều kiện, đánh số); H13–H14, R21–R27, AC-38..52. Trang khai báo: 21.
 
 **Last Updated**: 2026-11-13
 
-<!-- re-verified: 2026-11-13 16:20 - thêm thanh header văn phòng chỉ chạm UI shell; flow, route, nghiệp vụ, AC (kể cả AC-20 chuyển ngôn ngữ giữ số liệu) không đổi -->
+<!-- re-verified: 2026-11-13 18:10 - v5 thêm NV16, NV0f, AC-38..52 theo trả lời của user; chưa có code, AC-1..24 không đổi -->

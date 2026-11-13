@@ -9,6 +9,6 @@
 | docs/app-map/04-edge-functions.md | VERIFIED | ok |
 | docs/app-map/05-permissions-and-gates.md | VERIFIED | ok |
 | docs/app-map/06-user-flows.md | VERIFIED | ok |
-| docs/app-map/11-ba-spec-mvp-san-xuat-kho.md | VERIFIED | ok |
+| docs/app-map/11-ba-spec-mvp-san-xuat-kho.md | SUSPECT | code 'src/app/(office)' doi sau last_verified |
 | docs/app-map/12-design-spec-mvp-san-xuat-kho.md | VERIFIED | ok |
 | docs/app-map/README.md | NO-COVERS | doc khong gan code (chi hop le cho decision/vision) |
