@@ -48,7 +48,7 @@ Một thanh duy nhất trên đầu vùng làm việc của mọi màn `(office)
 
 | Vị trí | Phần tử | Việc | Ghi chú |
 |---|---|---|---|
-| Trái | Nút menu | Desktop: ẩn/hiện sidebar (nhớ lựa chọn). Mobile/tablet < 1024px: mở ngăn menu | `aria-expanded`, nhãn đổi theo trạng thái; hai nút riêng theo breakpoint, không đoán bằng JS |
+| Trái | Nút menu (icon 3 gạch ở mọi cỡ màn hình) | Desktop: ẩn/hiện sidebar (nhớ lựa chọn). Mobile/tablet < 1024px: mở ngăn menu | `aria-expanded`, nhãn đổi theo trạng thái; hai nút riêng theo breakpoint, không đoán bằng JS |
 | Trái | Logo | Chỉ hiện khi sidebar không hiện (mobile, hoặc desktop đã ẩn sidebar) | Logo rút gọn, bấm về `/` |
 | Phải | Chuông | Số cảnh báo chưa đọc → `/thong-bao` | Badge đỏ, `99+` khi > 99, ẩn khi 0 (đúng §0b.6) |
 | Phải | Sáng/tối | Một nút icon đổi theme, nhãn nêu hành động ("Chuyển sang giao diện tối") | Icon mặt trăng ở sáng, mặt trời ở tối |

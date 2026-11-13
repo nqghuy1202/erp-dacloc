@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Menu } from "lucide-react";
 import { cn } from "@/components/ui/cn";
 import { BrandLogo } from "@/components/brand";
 
@@ -14,7 +14,6 @@ export function Topbar({ sidebarHidden, menuOpen, onToggleSidebar, onOpenMenu, l
   sidebarHidden: boolean; menuOpen: boolean; onToggleSidebar: () => void; onOpenMenu: () => void; labels: TopbarLabels; children: ReactNode;
 }) {
   const side = sidebarHidden ? labels.showSidebar : labels.hideSidebar;
-  const SideIcon = sidebarHidden ? PanelLeftOpen : PanelLeftClose;
   return (
     <header className="sticky top-0 z-30 flex items-center gap-1 border-b border-line bg-surface"
       style={{ height: "calc(56px + env(safe-area-inset-top))", paddingTop: "env(safe-area-inset-top)", paddingLeft: "max(12px, env(safe-area-inset-left))", paddingRight: "max(12px, env(safe-area-inset-right))" }}>
@@ -22,7 +21,7 @@ export function Topbar({ sidebarHidden, menuOpen, onToggleSidebar, onOpenMenu, l
         <Menu size={20} aria-hidden />
       </button>
       <button type="button" onClick={onToggleSidebar} aria-expanded={!sidebarHidden} aria-controls="sidebar" aria-label={side} title={side} className={cn(BTN, "hidden lg:grid")}>
-        <SideIcon size={20} aria-hidden />
+        <Menu size={20} aria-hidden />
       </button>
       <Link href="/" className={cn("ml-1 h-11 items-center rounded-ctl px-1", sidebarHidden ? "flex" : "flex lg:hidden")}>
         <BrandLogo className="h-8 w-auto" />
