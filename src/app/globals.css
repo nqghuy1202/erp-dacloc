@@ -2,38 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Token theo design-spec 12 §5 — giá trị RGB để Tailwind dùng alpha */
+/* Token theo design-spec 12 §5 (v3 — nhận diện Đắc Lộc) — giá trị RGB để Tailwind dùng alpha.
+   accent = xanh lá logo #108040 · ok = xanh ngọc (tách họ với accent) · sidebar = xám than như thanh menu thuysandacloc.vn */
 :root {
   --bg: 248 250 252; --surface: 255 255 255; --surface-2: 241 245 249; --line: 226 232 240;
   --fg: 15 23 42; --fg-2: 71 85 105;
-  --accent: 15 118 110; --accent-fg: 255 255 255; --accent-soft: 204 251 241; --accent-ink: 17 94 89;
-  --ok: 22 163 74; --ok-soft: 220 252 231; --ok-ink: 20 83 45;
+  --accent: 16 128 64; --accent-fg: 255 255 255; --accent-soft: 223 243 230; --accent-ink: 11 90 45;
+  --ok: 15 118 110; --ok-fg: 255 255 255; --ok-soft: 204 251 241; --ok-ink: 19 78 74;
   --warn: 217 119 6; --warn-soft: 254 243 199; --warn-ink: 120 53 15;
   --bad: 220 38 38; --bad-soft: 254 226 226; --bad-ink: 127 29 29;
-  --brand: 15 118 110;
-  --band: 226 232 240; --sidebar: 15 23 42; --sidebar-fg: 203 213 225; --sidebar-active: 30 41 59;
+  --brand: 16 128 64;
+  --band: 226 232 240; --sidebar: 54 64 75; --sidebar-fg: 203 213 225; --sidebar-active: 74 85 99;
+  --wave-1: 178 232 226; --wave-2: 207 239 214;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: 2 6 23; --surface: 15 23 42; --surface-2: 30 41 59; --line: 30 41 59;
     --fg: 241 245 249; --fg-2: 148 163 184;
-    --accent: 45 212 191; --accent-fg: 2 6 23; --accent-soft: 19 78 74; --accent-ink: 153 246 228;
-    --ok: 74 222 128; --ok-soft: 20 83 45; --ok-ink: 187 247 208;
+    --accent: 74 197 122; --accent-fg: 2 6 23; --accent-soft: 20 61 38; --accent-ink: 187 240 207;
+    --ok: 45 212 191; --ok-fg: 2 6 23; --ok-soft: 19 78 74; --ok-ink: 153 246 228;
     --warn: 251 191 36; --warn-soft: 120 53 15; --warn-ink: 253 230 138;
     --bad: 248 113 113; --bad-soft: 127 29 29; --bad-ink: 254 202 202;
-    --band: 30 41 59; --sidebar: 2 6 23; --sidebar-fg: 148 163 184; --sidebar-active: 30 41 59;
+    --band: 30 41 59; --sidebar: 29 35 43; --sidebar-fg: 176 186 199; --sidebar-active: 50 59 70;
+    --wave-1: 17 64 66; --wave-2: 18 52 38;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: 2 6 23; --surface: 15 23 42; --surface-2: 30 41 59; --line: 30 41 59;
   --fg: 241 245 249; --fg-2: 148 163 184;
-  --accent: 45 212 191; --accent-fg: 2 6 23; --accent-soft: 19 78 74; --accent-ink: 153 246 228;
-  --ok: 74 222 128; --ok-soft: 20 83 45; --ok-ink: 187 247 208;
+  --accent: 74 197 122; --accent-fg: 2 6 23; --accent-soft: 20 61 38; --accent-ink: 187 240 207;
+  --ok: 45 212 191; --ok-fg: 2 6 23; --ok-soft: 19 78 74; --ok-ink: 153 246 228;
   --warn: 251 191 36; --warn-soft: 120 53 15; --warn-ink: 253 230 138;
   --bad: 248 113 113; --bad-soft: 127 29 29; --bad-ink: 254 202 202;
-  --band: 30 41 59; --sidebar: 2 6 23; --sidebar-fg: 148 163 184; --sidebar-active: 30 41 59;
+  --band: 30 41 59; --sidebar: 29 35 43; --sidebar-fg: 176 186 199; --sidebar-active: 50 59 70;
+  --wave-1: 17 64 66; --wave-2: 18 52 38;
   color-scheme: dark;
 }
 

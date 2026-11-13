@@ -215,7 +215,7 @@ export default async function LotPage({ params, searchParams }: { params: Promis
                   <li key={`${g.key}-${g.first.seq}`} className="relative flex gap-3 pb-4 last:pb-0">
                     <span className="absolute left-2 top-6 h-full w-px bg-line" aria-hidden />
                     <span className={cn("relative z-10 mt-1 grid h-4 w-4 shrink-0 place-items-center rounded-full",
-                      st === "done" ? "bg-ok text-white" : st === "current" ? "bg-accent text-accent-fg" : "border border-line bg-surface")}>
+                      st === "done" ? "bg-ok text-ok-fg" : st === "current" ? "bg-accent text-accent-fg" : "border border-line bg-surface")}>
                       {st === "done" ? <Check size={12} aria-hidden /> : st === "current" ? <CircleDot size={12} aria-hidden /> : null}
                     </span>
                     <div className={cn("min-w-0 flex-1", st === "current" && "rounded-ctl bg-accent-soft px-3 py-2 text-accent-ink")}>
@@ -232,7 +232,7 @@ export default async function LotPage({ params, searchParams }: { params: Promis
               })}
               <li className="relative flex gap-3">
                 <span className={cn("relative z-10 mt-1 grid h-4 w-4 shrink-0 place-items-center rounded-full",
-                  lot.status === "harvested" ? "bg-ok text-white" : "border border-line bg-surface")}>
+                  lot.status === "harvested" ? "bg-ok text-ok-fg" : "border border-line bg-surface")}>
                   {lot.status === "harvested" ? <Check size={12} aria-hidden /> : <Circle size={8} className="text-fg-2" aria-hidden />}
                 </span>
                 <div>

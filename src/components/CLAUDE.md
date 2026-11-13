@@ -7,6 +7,7 @@
 | ui/index.tsx | Button, LinkButton, Card, Badge, PageHeader, Empty, Stat, Table, Field/Input/Select/Textarea, Progress |
 | ui/client.tsx | ActionForm (useActionState + toast), Submit, Sheet (`<dialog>`), Toaster/toast, ThemeToggle |
 | ui/cn.ts | nối className |
+| brand.tsx | BrandLogo (logo Đắc Lộc), BrandWave (dải sóng màn đăng nhập) |
 | status.tsx | StatusBadge (bộ từ vựng trạng thái chung), ROLE_LABEL |
 | shell/nav.ts · sidebar.tsx · bell.tsx | Điều hướng văn phòng theo vai trò, chuông thông báo |
 | field/tabs.tsx · top.tsx · sync-badge.tsx | Bottom tabs, header, trạng thái đồng bộ vùng hiện trường |

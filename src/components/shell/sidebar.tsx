@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { Box, Cog, FlaskConical, Fish, Home, Menu, QrCode, Smartphone, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/components/ui/cn";
+import { BrandLogo } from "@/components/brand";
 
 type Item = { href: string; label: string; icon: string; children?: { href: string; label: string }[] };
 const ICONS = { home: Home, fish: Fish, flask: FlaskConical, box: Box, cog: Cog, phone: Smartphone } as Record<string, typeof Home>;
@@ -21,14 +22,14 @@ function Links({ items, path, onNav }: { items: Item[]; path: string; onNav?: ()
         return (
           <div key={it.href + it.label}>
             <Link href={it.href} onClick={onNav} aria-current={!it.children && groupActive ? "page" : undefined}
-              className={cn("flex min-h-10 items-center gap-3 rounded-ctl px-3", groupActive ? "text-white" : "", !it.children && groupActive && "bg-sidebar-active")}>
+              className={cn("flex min-h-10 items-center gap-3 rounded-ctl px-3", groupActive ? "text-white" : "", !it.children && groupActive && "bg-accent text-accent-fg")}>
               <Icon size={18} aria-hidden />{it.label}
             </Link>
             {it.children ? (
               <div className="flex flex-col">
                 {it.children.map((c) => (
                   <Link key={c.href} href={c.href} onClick={onNav} aria-current={isActive(path, c.href) ? "page" : undefined}
-                    className={cn("flex min-h-9 items-center rounded-ctl pl-11 pr-3 text-[13px]", isActive(path, c.href) && "bg-sidebar-active text-white")}>{c.label}</Link>
+                    className={cn("flex min-h-9 items-center rounded-ctl pl-11 pr-3 text-[13px]", isActive(path, c.href) && "bg-accent font-medium text-accent-fg")}>{c.label}</Link>
                 ))}
               </div>
             ) : null}
@@ -43,8 +44,8 @@ export function Sidebar({ items, footer, traceLabel }: { items: Item[]; footer: 
   const path = usePathname();
   const [open, setOpen] = useState(false);
   const brand = (
-    <Link href="/" className="flex items-center gap-2 px-2 py-1 font-semibold text-white">
-      <span className="grid h-7 w-7 place-items-center rounded-ctl bg-brand"><Fish size={16} /></span>Đắc Lộc
+    <Link href="/" className="flex items-center gap-3 px-2 py-1 font-semibold text-white">
+      <BrandLogo className="h-10 w-auto" />Đắc Lộc
     </Link>
   );
   const trace = (

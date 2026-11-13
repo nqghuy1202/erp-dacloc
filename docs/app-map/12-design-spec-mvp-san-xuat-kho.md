@@ -157,9 +157,11 @@ ttl_days: 90
 | M5 Quét | Quyền camera bị từ chối → nhập mã tay | — | Đang mở camera | QR lạ: "Mã không thuộc hệ thống" | Ánh sáng yếu: bật đèn flash |
 
 ## 5. Visual tokens
-- **Logo**: chưa có file logo trong repo → áp 04 §2 case (c): accent theo ngành thủy sản = **teal-700 `#0f766e`** (chữ trắng trên nền accent ≈ 5,5:1 ✓). Khi có logo Đắc Lộc → chạy lại B1–B4, ghi vào History.
-- **Neutral**: slate (accent lạnh). Nền trang slate-50, thẻ trắng, viền slate-200, chữ phụ slate-500, chữ chính slate-900. Dark: nền slate-950, thẻ slate-900, viền slate-800, chữ slate-100/400; accent dark = teal-400 trên nền tối (đo ≥ 4.5:1), chữ trên nút accent dark = slate-950.
-- **Semantic**: success green-600 · warning amber-600 (chữ trên nền amber dùng amber-950) · danger red-600 · info blue-600. Trạng thái nước luôn có chữ/biểu tượng đi kèm màu.
+- **Logo**: logo Đắc Lộc tải từ thuysandacloc.vn → `public/brand/logo-dacloc.png` (115×125, component `BrandLogo`). Chạy 04 §2: màu chủ đạo xanh lá rừng `#108040` (S ≈ 78%, L ≈ 28%) thuộc case (a) → **accent = `#108040`**, chữ trắng đo 5,02:1 ✓, trên nền trang 4,80:1 ✓. Logo chỉ đặt trên nền trung tính (sidebar xám than, nền sáng của tem) hoặc dải sóng đăng nhập; không đổi màu logo. Icon app/favicon vẽ lại hình thoi + sóng bằng SVG (`public/icon.svg` → `icon-192/512.png`) vì ảnh gốc quá nhỏ.
+- **Neutral**: slate. Nền trang slate-50, thẻ trắng, viền slate-200, chữ phụ slate-500, chữ chính slate-900. **Sidebar = xám than `#36404B`** như thanh menu website (chữ slate-300 7,1:1; mục đang chọn nền accent chữ trắng 5,02:1). Dark: nền slate-950, thẻ slate-900, viền slate-800, chữ slate-100/400; sidebar `#1D232B`; accent dark = `#4AC57A` (9,2:1 trên nền), chữ trên nút accent dark = slate-950.
+- **Semantic**: success = **xanh ngọc teal-700 `#0f766e`** (tách họ với accent xanh lá — 04 §1; chữ trên nền ok dùng token `ok-fg`: trắng ở sáng 5,47:1, slate-950 ở tối 10,8:1) · warning amber-600 (chữ trên nền amber dùng amber-950) · danger red-600 · info blue-600. Trạng thái nước luôn có chữ/biểu tượng đi kèm màu.
+- **Đăng nhập**: dải sóng 2 lớp phẳng (token `wave-1/2`, xanh ngọc nhạt — tối: xanh ngọc sẫm) phía trên chứa logo, như header thuysandacloc.vn (`BrandWave`). Không gradient.
+- **Tem QR in**: đầu tem có logo + "Thủy sản Đắc Lộc"; tem luôn nền trắng chữ đen.
 - **Chart categorical** (≤ 6, không dùng semantic): teal-600, indigo-500, orange-500, fuchsia-500, lime-600, sky-500. Dải ngưỡng nước tô nền slate-100.
 - **Font**: system font stack; số tabular-nums. Scale theo 04 §3; KPI 32px; mã bể mobile 18px.
 - **Spacing**: thang 4/8/12/16/24/32/48; thẻ padding 16 (mobile) / 24 (desktop); bo góc 12px thẻ, 8px control.
@@ -170,6 +172,7 @@ ttl_days: 90
 | Luật | Làm khác | Lý do |
 |---|---|---|
 | Body UI 14px [DEF] | Vùng `(field)` mobile: body 16px, số nhập 20px, nút chính 56dp | AUDIENCE: công nhân đứng ngoài trời, nắng, tay ướt/đeo găng |
+| Màn product không trang trí [DEF] | Màn đăng nhập có dải sóng thương hiệu (2 lớp màu phẳng, không ảnh, không animation) | AUDIENCE: nhân sự Đắc Lộc nhận ra ngay hệ thống nội bộ của công ty, đồng nhất với website thuysandacloc.vn; chỉ áp cho màn đăng nhập |
 | Desktop dày hơn mobile [DEF] | Bảng văn phòng hàng 48px (không 40) | AUDIENCE: nhân sự trại ít quen phần mềm, ưu tiên dễ đọc hơn mật độ |
 
 ## Anti-references
@@ -190,5 +193,6 @@ Screenshot từng màn ở 375 / 768 / 1280, sáng + tối, đối chiếu từn
 ## History
 - v1 (2026-11-07): khởi tạo từ ba-spec 11 — 16 màn văn phòng + 5 màn hiện trường.
 - v2 (2026-11-07): nguyên tắc tổ chức thông tin §0b; S1 mở đầu kế hoạch/thực tế + xếp hạng trại; S2 thẻ bể có tiến độ tới thu; S3 timeline + checklist thu hoạch; M1 tiến độ việc; thêm S17 Kế hoạch; cảnh báo khẩn qua chuông.
+- v3 (2026-11-13): theme nhận diện Đắc Lộc — chạy lại 04 §2 với logo thật: accent teal → xanh lá logo `#108040`, success green → teal (tách họ), sidebar xám than `#36404B`, logo ở sidebar/đăng nhập/tem, icon PWA vẽ lại, đăng nhập có dải sóng. Font giữ system stack (user chọn). Ô mã nhân viên bỏ ép in hoa (server đã chuẩn hoá).
 
-**Last Updated**: 2026-11-07
+**Last Updated**: 2026-11-13

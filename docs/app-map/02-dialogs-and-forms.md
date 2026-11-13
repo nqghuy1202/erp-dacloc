@@ -2,7 +2,7 @@
 
 > Load khi: thêm/sửa form, Sheet, xác nhận.
 covers: src/components/ui/client.tsx, src/app
-last_verified: 2026-11-07
+last_verified: 2026-11-13
 ttl_days: 90
 
 Cơ chế: `Sheet` (`<dialog>` bên phải, toàn màn trên mobile) + `ActionForm` (lỗi hiện tại chỗ, toast khi xong). Xác nhận không đảo được dùng `<dialog>` riêng nêu hậu quả.
@@ -24,3 +24,5 @@ Cơ chế: `Sheet` (`<dialog>` bên phải, toàn màn trên mobile) + `ActionFo
 | Thêm người dùng · Sửa trại · Khoá | S16 | createUser · setUserFarms · setUserActive | — |
 | Ghi nhật ký (offline) | M2 | outbox → /api/logs/sync | AC-6..9 |
 | Xác nhận cảnh báo | M4, /thong-bao | ackAlert | AC-10 |
+
+<!-- re-verified: 2026-11-13 15:55 - đổi theme Đắc Lộc chỉ chạm màu/logo/icon; route, điều hướng, form, flow, nghiệp vụ không đổi -->

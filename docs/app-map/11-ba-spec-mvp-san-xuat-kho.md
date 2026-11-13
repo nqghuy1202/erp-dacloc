@@ -2,7 +2,7 @@
 
 > Load khi: task chạm hành vi / nghiệp vụ / flow / acceptance của sản xuất giống (bố mẹ → PL), nhật ký bể, xét nghiệm, lô thành phẩm, truy xuất QR, kho vật tư.
 covers: src/server, src/app/(office), src/app/hien-truong, src/app/api
-last_verified: 2026-11-07
+last_verified: 2026-11-13
 ttl_days: 90
 
 > **Mục đích**: oracle HÀNH VI cho MVP — USER nào làm nghiệp vụ gì, flow vào/ra sao, đúng-sai đo bằng AC nào. KHÔNG mô tả giao diện (việc của design-spec). Nguồn bối cảnh: [docs/research/00-discovery-dac-loc.md](../research/00-discovery-dac-loc.md).
@@ -387,3 +387,5 @@ ttl_days: 90
 - v2 (2026-11-07): thêm NV14 kế hoạch sản xuất (trưởng trại lập, BGĐ duyệt) và NV15 việc hằng ngày (tự sinh + đột xuất) theo quyết định UI vòng 2 (docs/research/01); AC-21..24.
 
 **Last Updated**: 2026-11-07
+
+<!-- re-verified: 2026-11-13 15:55 - đổi theme Đắc Lộc chỉ chạm màu/logo/icon; route, điều hướng, form, flow, nghiệp vụ không đổi -->
