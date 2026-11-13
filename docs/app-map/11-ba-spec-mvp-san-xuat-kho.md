@@ -388,4 +388,4 @@ ttl_days: 90
 
 **Last Updated**: 2026-11-07
 
-<!-- re-verified: 2026-11-13 15:55 - đổi theme Đắc Lộc chỉ chạm màu/logo/icon; route, điều hướng, form, flow, nghiệp vụ không đổi -->
+<!-- re-verified: 2026-11-13 16:20 - thêm thanh header văn phòng chỉ chạm UI shell; flow, route, nghiệp vụ, AC (kể cả AC-20 chuyển ngôn ngữ giữ số liệu) không đổi -->

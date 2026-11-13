@@ -30,6 +30,6 @@ ttl_days: 90
 | /hien-truong/quet | M5 Quét | worker, farm_lead |
 | /hien-truong/toi | Tôi (ngôn ngữ, giao diện, đăng xuất) | worker, farm_lead |
 
-Điều hướng: sidebar văn phòng 5 nhóm (`src/components/shell/nav.ts`, lọc theo vai trò); bottom tabs hiện trường 5 mục.
+Điều hướng: sidebar văn phòng 5 nhóm (`src/components/shell/nav.ts`, lọc theo vai trò); bottom tabs hiện trường 5 mục. Thanh header văn phòng (design-spec 12 §1b) ở đầu mọi màn `(office)`: nút ẩn/hiện menu, chuông → `/thong-bao`, sáng/tối, menu tài khoản (VI/EN, đăng xuất).
 
 <!-- re-verified: 2026-11-13 15:55 - đổi theme Đắc Lộc chỉ chạm màu/logo/icon; route, điều hướng, form, flow, nghiệp vụ không đổi -->

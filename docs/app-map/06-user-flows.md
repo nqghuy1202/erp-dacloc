@@ -7,4 +7,4 @@ ttl_days: 90
 
 Flow nghiệp vụ (oracle): [11-ba-spec §5](11-ba-spec-mvp-san-xuat-kho.md). Đường đi qua màn: [12-design-spec §Flows](12-design-spec-mvp-san-xuat-kho.md).
 
-<!-- re-verified: 2026-11-13 15:55 - đổi theme Đắc Lộc chỉ chạm màu/logo/icon; route, điều hướng, form, flow, nghiệp vụ không đổi -->
+<!-- re-verified: 2026-11-13 16:20 - thêm thanh header văn phòng chỉ chạm UI shell; flow, route, nghiệp vụ, AC (kể cả AC-20 chuyển ngôn ngữ giữ số liệu) không đổi -->

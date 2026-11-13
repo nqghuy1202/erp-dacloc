@@ -1,7 +1,7 @@
 # 12 — Design-spec: MVP Sản xuất giống + Kho (Đắc Lộc)
 > Load khi: task chạm UI của sản xuất (trại/bể/lô/nhật ký), xét nghiệm, kho, tổng quan BGĐ, truy xuất QR, cài đặt danh mục.
 covers: src/app/(office), src/app/hien-truong, src/components, src/app/globals.css
-last_verified: 2026-11-07
+last_verified: 2026-11-13
 ttl_days: 90
 
 > Oracle GIAO DIỆN. Oracle HÀNH VI là [11-ba-spec-mvp-san-xuat-kho.md](11-ba-spec-mvp-san-xuat-kho.md) — mọi màn dưới đây phục vụ một nghiệp vụ NV0–NV13 và phải làm được các AC tương ứng. Tham chiếu hình: [docs/research/00-discovery-dac-loc.md](../research/00-discovery-dac-loc.md) §4.
@@ -39,9 +39,26 @@ ttl_days: 90
   - Xét nghiệm → Hàng đợi mẫu · Phiếu kết quả
   - Kho → Tồn kho · Phiếu nhập · Yêu cầu cấp · Kiểm kê
   - Cài đặt → Danh mục · Người dùng & quyền · Import
-  - Chân sidebar: ô tra mã lô/QR, ngôn ngữ VI/EN, tài khoản. Mục hiển thị theo quyền (công nhân không thấy Kho/Cài đặt).
+  - Chân sidebar: chỉ còn ô tra mã lô/QR (chuông, sáng/tối, ngôn ngữ, tài khoản chuyển lên thanh header §1b). Mục hiển thị theo quyền (công nhân không thấy Kho/Cài đặt).
 - **Mobile bottom tabs** (hiện trường, ≤ 5): `Hôm nay` · `Bể` · `Quét` · `Cảnh báo` · `Tôi`. Trưởng trại thêm lối vào lô/kho qua `Tôi → Trại của tôi` (không vượt 5 tab).
 - **Tablet**: sidebar thu gọn thành rail icon + nhãn khi mở; bảng giữ tối đa 6 cột, cột còn lại vào trang chi tiết.
+
+## 1b. Thanh header văn phòng (`src/components/shell/topbar.tsx`)
+Một thanh duy nhất trên đầu vùng làm việc của mọi màn `(office)`; thay chân sidebar cũ và thanh logo riêng của mobile. Màn hiện trường `/hien-truong` giữ `FieldTop`, không dùng thanh này.
+
+| Vị trí | Phần tử | Việc | Ghi chú |
+|---|---|---|---|
+| Trái | Nút menu | Desktop: ẩn/hiện sidebar (nhớ lựa chọn). Mobile/tablet < 1024px: mở ngăn menu | `aria-expanded`, nhãn đổi theo trạng thái; hai nút riêng theo breakpoint, không đoán bằng JS |
+| Trái | Logo | Chỉ hiện khi sidebar không hiện (mobile, hoặc desktop đã ẩn sidebar) | Logo rút gọn, bấm về `/` |
+| Phải | Chuông | Số cảnh báo chưa đọc → `/thong-bao` | Badge đỏ, `99+` khi > 99, ẩn khi 0 (đúng §0b.6) |
+| Phải | Sáng/tối | Một nút icon đổi theme, nhãn nêu hành động ("Chuyển sang giao diện tối") | Icon mặt trăng ở sáng, mặt trời ở tối |
+| Phải | Tài khoản | Nút tròn chữ cái đầu + (≥ 768px) tên và vai trò → popover | Popover: tên, vai trò · mã NV, ngôn ngữ VI/EN, Đăng xuất |
+
+- **User**: mọi vai trò văn phòng (U2–U6). Muốn thấy: còn cảnh báo không, mình đang đăng nhập là ai. Step tiếp: bấm chuông khi có số. Primary: không có (thanh điều hướng, không phải màn nhiệm vụ).
+- **Nhãn đồng bộ**: các nút chỉ có icon, nhãn nằm ở `aria-label`/tooltip; nhóm bên phải đều là ô 44×44 (tài khoản cao 44, rộng hơn ở ≥ 768px).
+- **Action → expectation**: đổi sáng/tối → đổi ngay, không tải lại; chuyển VI/EN → nhãn đổi tại chỗ (đã có, §4); Đăng xuất → về `/dang-nhap`; ẩn sidebar → nội dung giãn rộng, mở lại giữ nguyên trang đang xem.
+- **Trạng thái**: chưa login → layout chuyển về đăng nhập (không có header); chuông 0 → không badge; tên 60 ký tự → cắt `truncate`, đủ tên trong popover; popover đóng bằng Esc, bấm ngoài, hoặc chọn xong, trả focus về nút; không bắt buộc hover; `localStorage` chặn/trống → mặc định sidebar hiện, theme theo hệ điều hành; mobile có `safe-area-inset-top`.
+- **Kích thước**: cao 56px (+ vùng an toàn); nền `surface`, viền dưới `line`, `sticky` trên cùng, dưới ngăn menu (z-30 < z-40). Contrast theo token sáng/tối.
 
 ## Flows (đường đi qua màn, map từ ba-spec §5)
 | Flow | Đường đi |
@@ -194,5 +211,6 @@ Screenshot từng màn ở 375 / 768 / 1280, sáng + tối, đối chiếu từn
 - v1 (2026-11-07): khởi tạo từ ba-spec 11 — 16 màn văn phòng + 5 màn hiện trường.
 - v2 (2026-11-07): nguyên tắc tổ chức thông tin §0b; S1 mở đầu kế hoạch/thực tế + xếp hạng trại; S2 thẻ bể có tiến độ tới thu; S3 timeline + checklist thu hoạch; M1 tiến độ việc; thêm S17 Kế hoạch; cảnh báo khẩn qua chuông.
 - v3 (2026-11-13): theme nhận diện Đắc Lộc — chạy lại 04 §2 với logo thật: accent teal → xanh lá logo `#108040`, success green → teal (tách họ), sidebar xám than `#36404B`, logo ở sidebar/đăng nhập/tem, icon PWA vẽ lại, đăng nhập có dải sóng. Font giữ system stack (user chọn). Ô mã nhân viên bỏ ép in hoa (server đã chuẩn hoá).
+- v4 (2026-11-13): thêm thanh header văn phòng §1b (nút menu, chuông, sáng/tối, tài khoản); chân sidebar chỉ giữ ô tra mã.
 
 **Last Updated**: 2026-11-13

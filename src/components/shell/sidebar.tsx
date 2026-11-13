@@ -1,19 +1,19 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Box, Cog, FlaskConical, Fish, Home, Menu, QrCode, Smartphone, X } from "lucide-react";
-import { useState } from "react";
+import { Box, Cog, FlaskConical, Fish, Home, QrCode, Smartphone, X } from "lucide-react";
+import { useEffect } from "react";
 import { cn } from "@/components/ui/cn";
 import { BrandLogo } from "@/components/brand";
 
-type Item = { href: string; label: string; icon: string; children?: { href: string; label: string }[] };
+export type NavItemView = { href: string; label: string; icon: string; children?: { href: string; label: string }[] };
 const ICONS = { home: Home, fish: Fish, flask: FlaskConical, box: Box, cog: Cog, phone: Smartphone } as Record<string, typeof Home>;
 
 function isActive(path: string, href: string) {
   return href === "/" ? path === "/" : path === href || path.startsWith(`${href}/`);
 }
 
-function Links({ items, path, onNav }: { items: Item[]; path: string; onNav?: () => void }) {
+function Links({ items, path, onNav }: { items: NavItemView[]; path: string; onNav?: () => void }) {
   return (
     <nav className="flex flex-col gap-1" aria-label="Điều hướng chính">
       {items.map((it) => {
@@ -40,35 +40,38 @@ function Links({ items, path, onNav }: { items: Item[]; path: string; onNav?: ()
   );
 }
 
-export function Sidebar({ items, footer, traceLabel }: { items: Item[]; footer: React.ReactNode; traceLabel: string }) {
+export function Sidebar({ items, traceLabel, open, hidden, onClose, closeLabel }: {
+  items: NavItemView[]; traceLabel: string; open: boolean; hidden: boolean; onClose: () => void; closeLabel: string;
+}) {
   const path = usePathname();
-  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", esc);
+    return () => document.removeEventListener("keydown", esc);
+  }, [open, onClose]);
   const brand = (
     <Link href="/" className="flex items-center gap-3 px-2 py-1 font-semibold text-white">
       <BrandLogo className="h-10 w-auto" />Đắc Lộc
     </Link>
   );
   const trace = (
-    <Link href="/truy-xuat" className="flex min-h-10 items-center gap-2 rounded-ctl bg-sidebar-active px-3 text-[13px]"><QrCode size={16} />{traceLabel}</Link>
+    <Link href="/truy-xuat" onClick={onClose} className="flex min-h-10 items-center gap-2 rounded-ctl bg-sidebar-active px-3 text-[13px]"><QrCode size={16} />{traceLabel}</Link>
   );
   return (
     <>
-      <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col gap-4 overflow-y-auto bg-sidebar px-3 py-4 text-sidebar-fg lg:flex">
+      <aside id="sidebar" className={cn("sticky top-0 h-dvh w-60 shrink-0 flex-col gap-4 overflow-y-auto bg-sidebar px-3 py-4 text-sidebar-fg", hidden ? "hidden" : "hidden lg:flex")}>
         {brand}
         <Links items={items} path={path} />
-        <div className="mt-auto flex flex-col gap-3 border-t border-sidebar-active pt-4">{trace}{footer}</div>
+        <div className="mt-auto border-t border-sidebar-active pt-4">{trace}</div>
       </aside>
-      <div className="sticky top-0 z-30 flex items-center gap-2 bg-sidebar px-4 py-2 text-sidebar-fg lg:hidden" style={{ paddingTop: "max(8px, env(safe-area-inset-top))" }}>
-        {brand}
-        <button type="button" onClick={() => setOpen(true)} aria-label="Mở menu" className="ml-auto grid h-11 w-11 place-items-center rounded-ctl"><Menu /></button>
-      </div>
       {open ? (
-        <div className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal="true">
-          <button type="button" aria-label="Đóng menu" className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
-          <div className="absolute inset-y-0 left-0 flex w-72 flex-col gap-4 overflow-y-auto bg-sidebar px-3 py-4 text-sidebar-fg">
-            <div className="flex items-center">{brand}<button type="button" onClick={() => setOpen(false)} aria-label="Đóng" className="ml-auto grid h-11 w-11 place-items-center"><X /></button></div>
-            <Links items={items} path={path} onNav={() => setOpen(false)} />
-            <div className="mt-auto flex flex-col gap-3 border-t border-sidebar-active pt-4">{trace}{footer}</div>
+        <div id="drawer-menu" className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal="true">
+          <button type="button" aria-label={closeLabel} className="absolute inset-0 bg-black/40" onClick={onClose} />
+          <div className="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col gap-4 overflow-y-auto bg-sidebar px-3 py-4 text-sidebar-fg">
+            <div className="flex items-center">{brand}<button type="button" autoFocus onClick={onClose} aria-label={closeLabel} className="ml-auto grid h-11 w-11 place-items-center rounded-ctl"><X /></button></div>
+            <Links items={items} path={path} onNav={onClose} />
+            <div className="mt-auto border-t border-sidebar-active pt-4">{trace}</div>
           </div>
         </div>
       ) : null}

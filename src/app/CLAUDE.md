@@ -8,7 +8,7 @@ Quy ước: page là Server Component (`export const dynamic = "force-dynamic"`)
 |---|---|
 | dang-nhap/ | Đăng nhập mã NV |
 | actions.ts | login, logout, setLocale |
-| (office)/layout.tsx | Shell văn phòng (sidebar theo vai trò, chuông, VI/EN, sáng/tối) |
+| (office)/layout.tsx | Shell văn phòng: sidebar theo vai trò + thanh header (nút menu, chuông, sáng/tối, tài khoản có VI/EN và đăng xuất) |
 | (office)/page.tsx | S1 Tổng quan |
 | (office)/san-xuat/{trai,lo,bo-me,me-de,su-co,ke-hoach} | S2, S6/S3, S4, S5, S7, S17 |
 | (office)/xet-nghiem | S8, S9 |

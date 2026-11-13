@@ -1,7 +1,7 @@
 "use client";
 import { useActionState, useEffect, useRef, useState, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
-import { CheckCircle2, X, XCircle } from "lucide-react";
+import { CheckCircle2, Moon, Sun, X, XCircle } from "lucide-react";
 import { cn } from "./cn";
 
 export type ActionState = { ok?: boolean; message?: string; error?: string; at?: number };
@@ -83,6 +83,27 @@ export function Toaster() {
         </div>
       ))}
     </div>
+  );
+}
+
+/** Nút icon đổi sáng/tối cho thanh header; nhãn nêu hành động sẽ xảy ra. Chưa chọn thì theo hệ điều hành. */
+export function ThemeIconButton({ toDark, toLight }: { toDark: string; toLight: string }) {
+  const [theme, setTheme] = useState<"light" | "dark" | null>(null);
+  useEffect(() => {
+    const set = document.documentElement.dataset.theme;
+    setTheme(set === "dark" || set === "light" ? set : window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  }, []);
+  const dark = theme === "dark";
+  const flip = () => {
+    const next = dark ? "light" : "dark";
+    document.documentElement.dataset.theme = next; setTheme(next);
+    try { localStorage.setItem("theme", next); } catch { /* bỏ qua */ }
+  };
+  return (
+    <button type="button" onClick={flip} aria-label={dark ? toLight : toDark} title={dark ? toLight : toDark}
+      className="grid h-11 w-11 shrink-0 place-items-center rounded-ctl text-fg hover:bg-surface-2">
+      {dark ? <Sun size={20} aria-hidden /> : <Moon size={20} aria-hidden />}
+    </button>
   );
 }
 

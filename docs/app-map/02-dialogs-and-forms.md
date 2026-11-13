@@ -5,6 +5,8 @@ covers: src/components/ui/client.tsx, src/app
 last_verified: 2026-11-13
 ttl_days: 90
 
+Menu tài khoản (header, `shell/account-menu.tsx`): popover không modal, chứa form đổi ngôn ngữ (`setLocale`) và đăng xuất (`logout`); đóng bằng Esc, bấm ngoài, rời focus. Ngăn menu mobile là `<div role="dialog">` có Esc.
+
 Cơ chế: `Sheet` (`<dialog>` bên phải, toàn màn trên mobile) + `ActionForm` (lỗi hiện tại chỗ, toast khi xong). Xác nhận không đảo được dùng `<dialog>` riêng nêu hậu quả.
 
 | Form | Ở màn | Service | AC |
