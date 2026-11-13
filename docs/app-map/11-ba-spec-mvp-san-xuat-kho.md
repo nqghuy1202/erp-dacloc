@@ -192,7 +192,7 @@ ttl_days: 90
 
 ## 7. Scope & Priority
 - **IN (MVP)**: NV0–NV15; loài: tôm thẻ chân trắng đầy đủ; cá chẽm, tôm hùm qua cấu hình giai đoạn (cùng flow); song ngữ Việt/Anh; offline cho NV4; phân quyền theo trại + vai trò; cảnh báo trong app; import Excel danh mục + tồn đầu kỳ.
-- **OUT (phase sau)**: bán hàng/đặt giống, cổng đại lý-hộ nuôi, công nợ, kế toán đầy đủ, nhân sự-lương, nuôi thương phẩm/thu mua, kết nối IoT (chỉ chừa điểm nhận dữ liệu), Zalo/SMS, đơn mua hàng NCC (MVP chỉ ghi phiếu nhập).
+- **OUT (phase sau)**: bán hàng/đặt giống, cổng đại lý-hộ nuôi, công nợ, kế toán (Đắc Lộc đang dùng Vietsun: hướng mặc định là xuất dữ liệu sang Vietsun, không thay thế — chờ xác nhận), nhân sự-lương, nuôi thương phẩm/thu mua, ốc giống, kết nối IoT (chỉ chừa điểm nhận dữ liệu; họp nêu nhu cầu tự động hoá, chờ xác nhận có đưa vào phase 1), Zalo/SMS, đơn mua hàng NCC (MVP chỉ ghi phiếu nhập).
 
 ## 8. Success metric
 | Nghiệp vụ | Metric | Ngưỡng đạt |
@@ -381,11 +381,16 @@ ttl_days: 90
   - Lịch mẫu cho ăn / đo nước theo loài×giai đoạn do chuyên gia trại điền ở NV0.
   - Lô Green House được xử lý như một lô ương ở giai đoạn PL tiếp theo, kế thừa nguồn gốc.
 - **Open (RED — chờ user)**: không có.
+- **Open (chờ Đắc Lộc xác nhận, không chặn MVP)** — theo họp 2026-11, chi tiết [research 02](../research/02-hop-dac-loc-2026-11.md):
+  - An toàn sinh học là ưu tiên 1: đề xuất NV16 vệ sinh–khử trùng bể, NV17 truy vết và phong toả khi dương tính, NV18 ra vào khu an toàn sinh học; chưa viết AC vì cần SOP thật (Q1).
+  - Tần suất ghi theo từng chỉ tiêu: độ mặn + thay nước hằng tuần, còn lại hằng ngày; cần loại ghi "thay nước" ở NV4 và sửa lịch mẫu AC-23 (Q3).
+  - Kế toán Vietsun: phạm vi trao đổi dữ liệu (Q2). Ốc giống và cá giống: loài, giai đoạn (Q4). Tăng trưởng/FCR (Q8). Quản lý thiết bị/bảo trì (Q6).
 
 ## History
 - v1 (2026-11-07): khởi tạo — MVP Sản xuất giống + Kho, 14 nghiệp vụ, 20 AC.
 - v2 (2026-11-07): thêm NV14 kế hoạch sản xuất (trưởng trại lập, BGĐ duyệt) và NV15 việc hằng ngày (tự sinh + đột xuất) theo quyết định UI vòng 2 (docs/research/01); AC-21..24.
+- v3 (2026-11-13): ghi nhận họp Đắc Lộc — cập nhật phạm vi OUT (Vietsun, ốc giống, IoT) và danh sách Open; chưa đổi NV/AC.
 
-**Last Updated**: 2026-11-07
+**Last Updated**: 2026-11-13
 
 <!-- re-verified: 2026-11-13 16:20 - thêm thanh header văn phòng chỉ chạm UI shell; flow, route, nghiệp vụ, AC (kể cả AC-20 chuyển ngôn ngữ giữ số liệu) không đổi -->

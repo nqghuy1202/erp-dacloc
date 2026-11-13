@@ -163,6 +163,8 @@ npm run db:seed    # chỉ khi DB trống
      mà mọi AI session phải tôn trọng, không link file. -->
 - UI và tài liệu bằng tiếng Việt; giao diện song ngữ VI/EN
 - Dữ liệu trong DB Supabase hiện là dữ liệu MẪU (db:seed); không seed lại khi đã có dữ liệu
+- Ưu tiên số 1 của Đắc Lộc: an toàn dịch bệnh/an toàn sinh học, đứng trên quản trị; khi spec xung đột thì thiên về chặn khi thiếu bằng chứng an toàn (họp 2026-11, `docs/research/02-hop-dac-loc-2026-11.md`)
+- Đắc Lộc dùng Excel + kế toán Vietsun; không thay Vietsun nếu chưa được xác nhận, mặc định ERP chỉ xuất dữ liệu sang
 
 ---
 
