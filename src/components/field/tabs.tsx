@@ -23,7 +23,7 @@ export function FieldTabs({ labels, alertCount }: { labels: Record<(typeof TABS)
           <Link key={t.href} href={t.href} aria-current={active ? "page" : undefined}
             className={cn("relative flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium", active ? "text-accent-ink" : "text-fg-2")}>
             <Icon size={22} aria-hidden />{labels[t.key]}
-            {t.key === "alerts" && alertCount > 0 ? <span className="num absolute right-[22%] top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-bad px-1 text-[11px] font-bold text-white">{alertCount}</span> : null}
+            {t.key === "alerts" && alertCount > 0 ? <span className="num absolute right-[22%] top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-bad-fill px-1 text-[11px] font-bold text-white">{alertCount}</span> : null}
           </Link>
         );
       })}

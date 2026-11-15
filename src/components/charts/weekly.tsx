@@ -13,8 +13,8 @@ export function WeeklyChart({ data, label }: { data: { week: string; actual: num
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label={label} className="min-w-[480px]">
         {ticks.map((v) => (
           <g key={v}>
-            <line x1={L} x2={W} y1={y(v)} y2={y(v)} stroke="rgb(var(--line))" />
-            <text x={L - 8} y={y(v) + 4} textAnchor="end" fontSize="11" fill="rgb(var(--fg-2))">{v}</text>
+            <line x1={L} x2={W} y1={y(v)} y2={y(v)} stroke="var(--color-border)" />
+            <text x={L - 8} y={y(v) + 4} textAnchor="end" fontSize="11" fill="var(--color-text-secondary)">{v}</text>
           </g>
         ))}
         {data.map((d, i) => {
@@ -22,12 +22,12 @@ export function WeeklyChart({ data, label }: { data: { week: string; actual: num
           return (
             <g key={d.week}>
               <rect x={L + i * bw + bw * 0.2} y={y(v)} width={bw * 0.6} height={Math.max(0, y(0) - y(v))} rx={3}
-                fill={d.plan && d.actual < d.plan ? "rgb(var(--accent-soft))" : "rgb(var(--accent))"} />
-              <text x={cx(i)} y={H - 8} textAnchor="middle" fontSize="11" fill="rgb(var(--fg-2))">{d.week.slice(8, 10)}/{d.week.slice(5, 7)}</text>
+                fill={d.plan && d.actual < d.plan ? "var(--color-accent-muted)" : "var(--color-accent)"} />
+              <text x={cx(i)} y={H - 8} textAnchor="middle" fontSize="11" fill="var(--color-text-secondary)">{d.week.slice(8, 10)}/{d.week.slice(5, 7)}</text>
             </g>
           );
         })}
-        {data.some((d) => d.plan) ? <polyline points={pts} fill="none" stroke="rgb(var(--fg-2))" strokeWidth={2} strokeDasharray="4 4" /> : null}
+        {data.some((d) => d.plan) ? <polyline points={pts} fill="none" stroke="var(--color-text-secondary)" strokeWidth={2} strokeDasharray="4 4" /> : null}
       </svg>
     </div>
   );

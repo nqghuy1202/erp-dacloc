@@ -2,12 +2,12 @@
 
 > Load khi: thêm/sửa form, Sheet, xác nhận.
 covers: src/components/ui/client.tsx, src/app
-last_verified: 2026-11-13
+last_verified: 2026-11-15
 ttl_days: 90
 
-Menu tài khoản (header, `shell/account-menu.tsx`): popover không modal, chứa form đổi ngôn ngữ (`setLocale`) và đăng xuất (`logout`); đóng bằng Esc, bấm ngoài, rời focus. Ngăn menu mobile là `<div role="dialog">` có Esc.
+Menu tài khoản (header, `shell/account-menu.tsx`): popover không modal, chứa form đổi ngôn ngữ (`setLocale`) và đăng xuất (`logout`); đóng bằng Esc, bấm ngoài, rời focus. Ngăn menu mobile do Astryx `AppShell` dựng (dialog modal, bẫy focus, Esc đóng, trả focus về nút).
 
-Cơ chế: `Sheet` (`<dialog>` bên phải, toàn màn trên mobile) + `ActionForm` (lỗi hiện tại chỗ, toast khi xong). Xác nhận không đảo được dùng `<dialog>` riêng nêu hậu quả.
+Cơ chế: `Sheet` (`<dialog>` bên phải, toàn màn trên mobile; nút mở/đóng là Astryx Button/IconButton) + `ActionForm` (`ui/form.tsx`; lỗi hiện tại chỗ, toast khi xong). Nút gửi: `Submit` (Astryx, văn phòng) / `FieldSubmit` (nhẹ, hiện trường + đăng nhập). Xác nhận không đảo được dùng `<dialog>` riêng nêu hậu quả.
 
 | Form | Ở màn | Service | AC |
 |---|---|---|---|
@@ -28,3 +28,4 @@ Cơ chế: `Sheet` (`<dialog>` bên phải, toàn màn trên mobile) + `ActionFo
 | Xác nhận cảnh báo | M4, /thong-bao | ackAlert | AC-10 |
 
 <!-- re-verified: 2026-11-13 15:55 - đổi theme Đắc Lộc chỉ chạm màu/logo/icon; route, điều hướng, form, flow, nghiệp vụ không đổi -->
+<!-- re-verified: 2026-11-15 20:00 - form/Sheet chỉ đổi nút sang Astryx và tách ActionForm ra ui/form.tsx; trường, hành vi lỗi/toast, xác nhận không đổi -->

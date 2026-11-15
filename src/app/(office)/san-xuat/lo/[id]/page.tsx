@@ -82,10 +82,10 @@ function Sparkline({ points, thr, label }: { points: { t: number; v: number }[];
   const out = (v: number) => !!thr && (v < thr.min || v > thr.max);
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="h-16 w-full" role="img" aria-label={label} preserveAspectRatio="none">
-      {thr ? <rect x={0} width={W} y={y(thr.max)} height={Math.max(1, y(thr.min) - y(thr.max))} style={{ fill: "rgb(var(--band))" }} /> : null}
+      {thr ? <rect x={0} width={W} y={y(thr.max)} height={Math.max(1, y(thr.min) - y(thr.max))} style={{ fill: "var(--app-band)" }} /> : null}
       <polyline points={points.map((p) => `${x(p.t)},${y(p.v)}`).join(" ")} fill="none" strokeWidth={2} vectorEffect="non-scaling-stroke"
-        style={{ stroke: "rgb(var(--accent))" }} strokeLinejoin="round" strokeLinecap="round" />
-      {points.filter((p) => out(p.v)).map((p, i) => <circle key={i} cx={x(p.t)} cy={y(p.v)} r={3} style={{ fill: "rgb(var(--bad))" }} />)}
+        style={{ stroke: "var(--color-accent)" }} strokeLinejoin="round" strokeLinecap="round" />
+      {points.filter((p) => out(p.v)).map((p, i) => <circle key={i} cx={x(p.t)} cy={y(p.v)} r={3} style={{ fill: "var(--color-text-error)" }} />)}
     </svg>
   );
 }
@@ -215,7 +215,7 @@ export default async function LotPage({ params, searchParams }: { params: Promis
                   <li key={`${g.key}-${g.first.seq}`} className="relative flex gap-3 pb-4 last:pb-0">
                     <span className="absolute left-2 top-6 h-full w-px bg-line" aria-hidden />
                     <span className={cn("relative z-10 mt-1 grid h-4 w-4 shrink-0 place-items-center rounded-full",
-                      st === "done" ? "bg-ok text-ok-fg" : st === "current" ? "bg-accent text-accent-fg" : "border border-line bg-surface")}>
+                      st === "done" ? "bg-ok-fill text-ok-fg" : st === "current" ? "bg-accent text-accent-fg" : "border border-line bg-surface")}>
                       {st === "done" ? <Check size={12} aria-hidden /> : st === "current" ? <CircleDot size={12} aria-hidden /> : null}
                     </span>
                     <div className={cn("min-w-0 flex-1", st === "current" && "rounded-ctl bg-accent-soft px-3 py-2 text-accent-ink")}>
@@ -232,7 +232,7 @@ export default async function LotPage({ params, searchParams }: { params: Promis
               })}
               <li className="relative flex gap-3">
                 <span className={cn("relative z-10 mt-1 grid h-4 w-4 shrink-0 place-items-center rounded-full",
-                  lot.status === "harvested" ? "bg-ok text-ok-fg" : "border border-line bg-surface")}>
+                  lot.status === "harvested" ? "bg-ok-fill text-ok-fg" : "border border-line bg-surface")}>
                   {lot.status === "harvested" ? <Check size={12} aria-hidden /> : <Circle size={8} className="text-fg-2" aria-hidden />}
                 </span>
                 <div>

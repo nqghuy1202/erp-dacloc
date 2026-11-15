@@ -26,5 +26,5 @@ test("AC-8 công nhân mở bể trại khác → chặn", async ({ page }) => {
   const res = await page.request.get("/api/resolve?code=TG11-B01");
   const { href } = await res.json();
   await page.goto(href);
-  await expect(page.getByRole("alert")).toContainText("không được giao");
+  await expect(page.getByRole("alert").filter({ hasText: "không được giao" })).toBeVisible();
 });

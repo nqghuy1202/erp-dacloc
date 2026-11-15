@@ -10,8 +10,8 @@ export function BrandLogo({ className }: { className?: string }) {
 export function BrandWave({ className }: { className?: string }) {
   return (
     <svg aria-hidden viewBox="0 0 1440 320" preserveAspectRatio="none" className={className}>
-      <path d="M0 0h1440v190c-170 60-360 92-560 60C640 212 470 160 300 176 180 188 80 220 0 250Z" fill="rgb(var(--wave-1))" />
-      <path d="M0 250c80-30 180-62 300-74 170-16 340 36 580 74 200 32 390 0 560-60v40c-190 70-380 96-580 66C640 262 470 216 300 226 180 234 80 262 0 290Z" fill="rgb(var(--wave-2))" />
+      <path d="M0 0h1440v190c-170 60-360 92-560 60C640 212 470 160 300 176 180 188 80 220 0 250Z" fill="var(--app-wave-1)" />
+      <path d="M0 250c80-30 180-62 300-74 170-16 340 36 580 74 200 32 390 0 560-60v40c-190 70-380 96-580 66C640 262 470 216 300 226 180 234 80 262 0 290Z" fill="var(--app-wave-2)" />
     </svg>
   );
 }

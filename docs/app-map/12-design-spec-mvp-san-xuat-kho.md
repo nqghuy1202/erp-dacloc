@@ -1,13 +1,13 @@
 # 12 — Design-spec: MVP Sản xuất giống + Kho (Đắc Lộc)
 > Load khi: task chạm UI của sản xuất (trại/bể/lô/nhật ký), xét nghiệm, kho, tổng quan BGĐ, truy xuất QR, cài đặt danh mục.
-covers: src/app/(office), src/app/hien-truong, src/components, src/app/globals.css
-last_verified: 2026-11-13
+covers: src/app/(office), src/app/hien-truong, src/components, src/app/globals.css, themes/dacloc
+last_verified: 2026-11-15
 ttl_days: 90
 
 > Oracle GIAO DIỆN. Oracle HÀNH VI là [11-ba-spec-mvp-san-xuat-kho.md](11-ba-spec-mvp-san-xuat-kho.md) — mọi màn dưới đây phục vụ một nghiệp vụ NV0–NV13 và phải làm được các AC tương ứng. Tham chiếu hình: [docs/research/00-discovery-dac-loc.md](../research/00-discovery-dac-loc.md) §4.
 
 ## 0. Quyết định nền
-- **Stack [STACK]**: Next.js (App Router) + React + Tailwind + shadcn/ui + lucide-react; chart: Recharts (qua shadcn chart). PWA offline cho vùng `(field)`.
+- **Stack [STACK]** (v5): Next.js (App Router) + React + Tailwind 4 + **design system Astryx** (`@astryxdesign/core`, theme `dacloc`) + lucide-react — thay shadcn/ui ([ADR 0003](../decisions/0003-design-system-astryx.md)). Văn phòng dùng component Astryx; PWA `(field)` dùng bản nhẹ chỉ theo token (`src/components/field/ui.tsx`) để giữ JS. Chart: SVG riêng theo token.
 - **Hai không gian**: `Văn phòng` (web, desktop-first, dạng bảng gọn — tinh thần VANTUS) và `Hiện trường` (PWA mobile-first cho công nhân/trưởng trại tại bể — tinh thần Gummi app). Dashboard dùng thẻ số liệu lớn + ảnh/biểu đồ; màn nghiệp vụ dùng bảng.
 - **IA theo bộ phận** [DEF]: Tổng quan · Sản xuất · Xét nghiệm · Kho · Cài đặt. Mỗi bộ phận có dashboard KPI riêng + thao tác vào/ra của nó; BGĐ có tổng quan rollup.
 - **Phạm vi trại**: bộ chọn trại toàn cục ở đầu vùng làm việc; người chỉ có 1 trại không thấy bộ chọn (R1).
@@ -33,7 +33,7 @@ ttl_days: 90
 | Người dùng mới (lần đầu, mọi role) | Bắt đầu từ đâu | Danh sách 3–4 bước theo vai trò (chỉ khi dữ liệu trống) | Bước thiết lập đầu tiên |
 
 ## 1. Điều hướng
-- **Desktop sidebar** (văn phòng): 5 mục cấp 1, tối đa 2 cấp:
+- **Desktop sidebar** (văn phòng, Astryx `SideNav` trong `AppShell`): 5 mục cấp 1, tối đa 2 cấp; nhóm có mục con mở/đóng được, nhóm chứa trang hiện tại mở sẵn. Nút "Thu gọn thanh bên" ở chân → rail chỉ icon (mục con mở dạng flyout), nhớ lựa chọn ở localStorage:
   - Tổng quan
   - Sản xuất → Kế hoạch · Trại & bể · Đàn bố mẹ · Mẻ đẻ · Lô ương · Sự cố
   - Xét nghiệm → Hàng đợi mẫu · Phiếu kết quả
@@ -41,15 +41,15 @@ ttl_days: 90
   - Cài đặt → Danh mục · Người dùng & quyền · Import
   - Chân sidebar: chỉ còn ô tra mã lô/QR (chuông, sáng/tối, ngôn ngữ, tài khoản chuyển lên thanh header §1b). Mục hiển thị theo quyền (công nhân không thấy Kho/Cài đặt).
 - **Mobile bottom tabs** (hiện trường, ≤ 5): `Hôm nay` · `Bể` · `Quét` · `Cảnh báo` · `Tôi`. Trưởng trại thêm lối vào lô/kho qua `Tôi → Trại của tôi` (không vượt 5 tab).
-- **Tablet**: sidebar thu gọn thành rail icon + nhãn khi mở; bảng giữ tối đa 6 cột, cột còn lại vào trang chi tiết.
+- **Tablet/mobile** (< breakpoint của AppShell): sidebar chuyển vào ngăn menu do `AppShell` dựng (nút "Mở điều hướng" trên thanh trên, bẫy focus, Esc đóng); bảng giữ tối đa 6 cột, cột còn lại vào trang chi tiết.
 
-## 1b. Thanh header văn phòng (`src/components/shell/topbar.tsx`)
+## 1b. Thanh header văn phòng (`TopNav` trong `src/components/shell/frame.tsx`)
 Một thanh duy nhất trên đầu vùng làm việc của mọi màn `(office)`; thay chân sidebar cũ và thanh logo riêng của mobile. Màn hiện trường `/hien-truong` giữ `FieldTop`, không dùng thanh này.
 
 | Vị trí | Phần tử | Việc | Ghi chú |
 |---|---|---|---|
-| Trái | Nút menu (icon 3 gạch ở mọi cỡ màn hình) | Desktop: ẩn/hiện sidebar (nhớ lựa chọn). Mobile/tablet < 1024px: mở ngăn menu | `aria-expanded`, nhãn đổi theo trạng thái; hai nút riêng theo breakpoint, không đoán bằng JS |
-| Trái | Logo | Chỉ hiện khi sidebar không hiện (mobile, hoặc desktop đã ẩn sidebar) | Logo rút gọn, bấm về `/` |
+| Trái | Nút mở điều hướng (chỉ mobile/tablet, do AppShell dựng) | Mở ngăn menu | Desktop không còn nút ẩn sidebar ở header — thay bằng nút "Thu gọn thanh bên" ở chân SideNav (v5) |
+| Trái | Logo + "Đắc Lộc" | Luôn hiện, bấm về `/` | `TopNavHeading` |
 | Phải | Chuông | Số cảnh báo chưa đọc → `/thong-bao` | Badge đỏ, `99+` khi > 99, ẩn khi 0 (đúng §0b.6) |
 | Phải | Sáng/tối | Một nút icon đổi theme, nhãn nêu hành động ("Chuyển sang giao diện tối") | Icon mặt trăng ở sáng, mặt trời ở tối |
 | Phải | Tài khoản | Nút tròn chữ cái đầu + (≥ 768px) tên và vai trò → popover | Popover: tên, vai trò · mã NV, ngôn ngữ VI/EN, Đăng xuất |
@@ -58,7 +58,7 @@ Một thanh duy nhất trên đầu vùng làm việc của mọi màn `(office)
 - **Nhãn đồng bộ**: các nút chỉ có icon, nhãn nằm ở `aria-label`/tooltip; nhóm bên phải đều là ô 44×44 (tài khoản cao 44, rộng hơn ở ≥ 768px).
 - **Action → expectation**: đổi sáng/tối → đổi ngay, không tải lại; chuyển VI/EN → nhãn đổi tại chỗ (đã có, §4); Đăng xuất → về `/dang-nhap`; ẩn sidebar → nội dung giãn rộng, mở lại giữ nguyên trang đang xem.
 - **Trạng thái**: chưa login → layout chuyển về đăng nhập (không có header); chuông 0 → không badge; tên 60 ký tự → cắt `truncate`, đủ tên trong popover; popover đóng bằng Esc, bấm ngoài, hoặc chọn xong, trả focus về nút; không bắt buộc hover; `localStorage` chặn/trống → mặc định sidebar hiện, theme theo hệ điều hành; mobile có `safe-area-inset-top`.
-- **Kích thước**: cao 56px (+ vùng an toàn); nền `surface`, viền dưới `line`, `sticky` trên cùng, dưới ngăn menu (z-30 < z-40). Contrast theo token sáng/tối.
+- **Kích thước**: theo `AppShell` biến thể `elevated` (thanh trên + thanh bên nền `body`, vùng nội dung nổi nền `surface` bo góc); vùng an toàn do AppShell xử lý (`viewport-fit=cover`). Nút icon theo cỡ Astryx (36px desktop; Astryx nới vùng chạm ≥ 44px khi `pointer: coarse`). Contrast theo token sáng/tối.
 
 ## Flows (đường đi qua màn, map từ ba-spec §5)
 | Flow | Đường đi |
@@ -118,12 +118,12 @@ Một thanh duy nhất trên đầu vùng làm việc của mọi màn `(office)
 ## 3. Component (shadcn)
 | Nhu cầu | Component | Ghi chú |
 |---|---|---|
-| Danh sách nghiệp vụ | Table (TanStack) | sort, lọc, chọn cột |
+| Danh sách nghiệp vụ | `DataTable` (Astryx Table, `src/components/ui/data-table.tsx`) | tìm không dấu + sắp xếp cột phía trình duyệt trên trang đã tải; lọc theo trại/giai đoạn/trạng thái vẫn ở server (form GET). Đã áp: S6. Còn lại: giai đoạn 2 |
 | Lưới bể / trại | Card nhỏ dạng `<button>` | toàn thẻ bấm được, có focus ring |
 | Form ngắn | Sheet (desktop) / Drawer (mobile) | |
 | Xác nhận không đảo được (chốt phiếu, huỷ lô) | AlertDialog | nêu hậu quả bằng số: "Huỷ lô L-100 — 820.000 con" |
-| Trạng thái | Badge ≤ 2 từ | `Chậm` · `Đúng tiến độ` · `Trễ` · `Đang ương` · `Cách ly` · `Sẵn sàng` · `Loại bỏ` · `Chờ cấp` · `Đã chốt` · `Chờ duyệt` |
-| Thông báo kết quả | Toast (sonner) | xoá/huỷ được → toast có Hoàn tác 10 giây |
+| Trạng thái | Badge Astryx (`variant` success/warning/error/green/neutral) ≤ 2 từ | `Chậm` · `Đúng tiến độ` · `Trễ` · `Đang ương` · `Cách ly` · `Sẵn sàng` · `Loại bỏ` · `Chờ cấp` · `Đã chốt` · `Chờ duyệt` |
+| Thông báo kết quả | Toast riêng (`ui/form.tsx`, không phụ thuộc Astryx để dùng ở PWA) | xoá/huỷ được → toast có Hoàn tác 10 giây |
 | Biểu đồ | shadcn chart / Recharts | đường cho chỉ số nước, cột cho sản lượng |
 | Tab trong trang | Tabs | 2–6 tab, không lồng |
 | Chọn trại | Select ở đầu vùng làm việc | |
@@ -174,6 +174,7 @@ Một thanh duy nhất trên đầu vùng làm việc của mọi màn `(office)
 | M5 Quét | Quyền camera bị từ chối → nhập mã tay | — | Đang mở camera | QR lạ: "Mã không thuộc hệ thống" | Ánh sáng yếu: bật đèn flash |
 
 ## 5. Visual tokens
+- **Theme Astryx `dacloc`** (v5): nguồn màu duy nhất ở `themes/dacloc/` — sửa bằng `npx astryx experimental theme editor set dacloc …`, xem PNG `… show dacloc --png`; KHÔNG sửa tay `src/themes/` hay `:root`. Tên token cũ của app (`bg-surface`, `text-fg-2`, `bg-accent`, `bg-ok-soft`…) được trỏ vào biến Astryx trong `globals.css` (`@theme reference inline`); màu nền trạng thái đậm đổi tên `bg-ok-fill`/`bg-warn-fill`/`bg-bad-fill` (`text-ok`/`text-bad` giờ là màu chữ đạt 4,5:1). Warning = amber-700 `#b45309` (amber-600 chỉ 2,82:1 với nền, editor từ chối cho mảng màu). Nền trang sáng slate-100 `#f1f5f9`, tối `#0b1120`.
 - **Logo**: logo Đắc Lộc tải từ thuysandacloc.vn → `public/brand/logo-dacloc.png` (115×125, component `BrandLogo`). Chạy 04 §2: màu chủ đạo xanh lá rừng `#108040` (S ≈ 78%, L ≈ 28%) thuộc case (a) → **accent = `#108040`**, chữ trắng đo 5,02:1 ✓, trên nền trang 4,80:1 ✓. Logo chỉ đặt trên nền trung tính (sidebar xám than, nền sáng của tem) hoặc dải sóng đăng nhập; không đổi màu logo. Icon app/favicon vẽ lại hình thoi + sóng bằng SVG (`public/icon.svg` → `icon-192/512.png`) vì ảnh gốc quá nhỏ.
 - **Neutral**: slate. Nền trang slate-50, thẻ trắng, viền slate-200, chữ phụ slate-500, chữ chính slate-900. **Sidebar = xám than `#36404B`** như thanh menu website (chữ slate-300 7,1:1; mục đang chọn nền accent chữ trắng 5,02:1). Dark: nền slate-950, thẻ slate-900, viền slate-800, chữ slate-100/400; sidebar `#1D232B`; accent dark = `#4AC57A` (9,2:1 trên nền), chữ trên nút accent dark = slate-950.
 - **Semantic**: success = **xanh ngọc teal-700 `#0f766e`** (tách họ với accent xanh lá — 04 §1; chữ trên nền ok dùng token `ok-fg`: trắng ở sáng 5,47:1, slate-950 ở tối 10,8:1) · warning amber-600 (chữ trên nền amber dùng amber-950) · danger red-600 · info blue-600. Trạng thái nước luôn có chữ/biểu tượng đi kèm màu.
@@ -190,7 +191,7 @@ Một thanh duy nhất trên đầu vùng làm việc của mọi màn `(office)
 |---|---|---|
 | Body UI 14px [DEF] | Vùng `(field)` mobile: body 16px, số nhập 20px, nút chính 56dp | AUDIENCE: công nhân đứng ngoài trời, nắng, tay ướt/đeo găng |
 | Màn product không trang trí [DEF] | Màn đăng nhập có dải sóng thương hiệu (2 lớp màu phẳng, không ảnh, không animation) | AUDIENCE: nhân sự Đắc Lộc nhận ra ngay hệ thống nội bộ của công ty, đồng nhất với website thuysandacloc.vn; chỉ áp cho màn đăng nhập |
-| Desktop dày hơn mobile [DEF] | Bảng văn phòng hàng 48px (không 40) | AUDIENCE: nhân sự trại ít quen phần mềm, ưu tiên dễ đọc hơn mật độ |
+| Desktop dày hơn mobile [DEF] | Bảng văn phòng hàng 48px (không 40); bảng `DataTable` dùng mật độ `balanced` của Astryx | AUDIENCE: nhân sự trại ít quen phần mềm, ưu tiên dễ đọc hơn mật độ |
 
 ## Anti-references
 - Dashboard tối neon kiểu "control room", gradient tím-xanh, glassmorphism.
@@ -205,12 +206,13 @@ Một thanh duy nhất trên đầu vùng làm việc của mọi màn `(office)
 - Bất biến: touch target 44/48 · contrast 4.5:1 cả sáng/tối · focus ring `focus-visible` không bị huỷ · không thao tác nào chỉ qua hover · số theo locale.
 
 ## Nghiệm thu
-Screenshot từng màn ở 375 / 768 / 1280, sáng + tối, đối chiếu từng ô ma trận trạng thái — lưu `docs/app-map/_screens/mvp/<màn>-<cỡ>-<trạng thái>.png`. Bản thử HTML S1, S3, M1+M2 (số liệu mẫu): [docs/prototypes/mvp-ban-thu.html](../prototypes/mvp-ban-thu.html) — bản xem: https://claude.ai/artifact/Dnk8EyP5BMsMihthGvP9Vh. Chờ user duyệt hướng nhìn trước khi code.
+Screenshot từng màn ở 375 / 768 / 1280, sáng + tối, đối chiếu từng ô ma trận trạng thái — lưu `docs/app-map/_screens/mvp/<màn>-<cỡ>-<trạng thái>.png`; ảnh giai đoạn Astryx ở `_screens/astryx/` (sinh bởi `e2e/ui-astryx.spec.ts`). Bản thử HTML S1, S3, M1+M2 (số liệu mẫu): [docs/prototypes/mvp-ban-thu.html](../prototypes/mvp-ban-thu.html) — bản xem: https://claude.ai/artifact/Dnk8EyP5BMsMihthGvP9Vh. Chờ user duyệt hướng nhìn trước khi code.
 
 ## History
 - v1 (2026-11-07): khởi tạo từ ba-spec 11 — 16 màn văn phòng + 5 màn hiện trường.
 - v2 (2026-11-07): nguyên tắc tổ chức thông tin §0b; S1 mở đầu kế hoạch/thực tế + xếp hạng trại; S2 thẻ bể có tiến độ tới thu; S3 timeline + checklist thu hoạch; M1 tiến độ việc; thêm S17 Kế hoạch; cảnh báo khẩn qua chuông.
 - v3 (2026-11-13): theme nhận diện Đắc Lộc — chạy lại 04 §2 với logo thật: accent teal → xanh lá logo `#108040`, success green → teal (tách họ), sidebar xám than `#36404B`, logo ở sidebar/đăng nhập/tem, icon PWA vẽ lại, đăng nhập có dải sóng. Font giữ system stack (user chọn). Ô mã nhân viên bỏ ép in hoa (server đã chuẩn hoá).
 - v4 (2026-11-13): thêm thanh header văn phòng §1b (nút menu, chuông, sáng/tối, tài khoản); chân sidebar chỉ giữ ô tra mã.
+- v5 (2026-11-15): chuyển sang design system Astryx (ADR 0003) — giai đoạn 1: nền Tailwind 4 + theme `dacloc`, khung AppShell/SideNav/TopNav (thu gọn thành rail, ngăn menu mobile), component dùng chung bọc Astryx; màn mẫu: S1 thêm primary "Xem trại chậm nhất · <trại>" (đúng Screen map), S6 bảng tìm không dấu + sắp xếp, M1 thêm nút cố định "Ghi việc kế tiếp · <bể>" 56dp ở vùng ngón cái (đúng Screen map). PWA hiện trường + đăng nhập dùng bản nhẹ theo token (JS −1…+2%). Sáng/tối lưu cookie `theme`. Ảnh: `_screens/astryx/`.
 
-**Last Updated**: 2026-11-13
+**Last Updated**: 2026-11-15

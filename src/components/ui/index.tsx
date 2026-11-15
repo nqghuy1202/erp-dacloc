@@ -1,32 +1,56 @@
-import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
+import { Button as AxButton } from "@astryxdesign/core/Button";
+import { Badge as AxBadge } from "@astryxdesign/core/Badge";
+import { Card as AxCard } from "@astryxdesign/core/Card";
+import { EmptyState } from "@astryxdesign/core/EmptyState";
+import { Heading } from "@astryxdesign/core/Heading";
 import { cn } from "./cn";
 
+// Lớp mỏng trên Astryx (design-spec 12 §3, v5): giữ API cũ để các màn không phải đổi, hình do theme `dacloc` quyết.
+
 type Variant = "primary" | "secondary" | "ghost" | "danger";
-const VAR: Record<Variant, string> = {
-  primary: "bg-accent text-accent-fg border-accent hover:brightness-110",
-  secondary: "bg-surface text-fg border-line hover:bg-surface-2",
-  ghost: "bg-transparent text-fg border-transparent hover:bg-surface-2",
-  danger: "bg-bad text-white border-bad hover:brightness-110",
+const AX_VARIANT = { primary: "primary", secondary: "secondary", ghost: "ghost", danger: "destructive" } as const;
+
+export { textOf } from "./text";
+import { textOf } from "./text";
+
+const full = (c?: string) => (c && /(^|\s)w-full(\s|$)/.test(c) ? "100%" : undefined);
+
+type BtnProps = {
+  variant?: Variant; size?: "sm" | "md" | "lg"; className?: string; children?: ReactNode;
+  "aria-label"?: string; "aria-describedby"?: string; title?: string;
 };
-const BTN = "inline-flex items-center justify-center gap-2 rounded-ctl border px-4 min-h-10 font-medium whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed";
 
-export function Button({ variant = "secondary", className, ...p }: ComponentProps<"button"> & { variant?: Variant }) {
-  return <button type="button" {...p} className={cn(BTN, VAR[variant], className)} />;
+export function Button({ variant = "secondary", size, className, children, disabled, onClick, type = "button", name, value, form, ...rest }: BtnProps & {
+  disabled?: boolean; onClick?: ComponentProps<"button">["onClick"]; type?: "button" | "submit" | "reset"; name?: string; value?: string; form?: string;
+}) {
+  const label = rest["aria-label"] ?? textOf(children);
+  return (
+    <AxButton label={label} variant={AX_VARIANT[variant]} size={size} isDisabled={disabled} type={type} name={name} value={value} form={form}
+      onClick={onClick as never} tooltip={rest.title} aria-describedby={rest["aria-describedby"]} className={className} width={full(className)}>
+      {typeof children === "string" ? undefined : children}
+    </AxButton>
+  );
 }
 
-export function LinkButton({ variant = "secondary", className, ...p }: ComponentProps<typeof Link> & { variant?: Variant }) {
-  return <Link {...p} className={cn(BTN, VAR[variant], className)} />;
+/** Nút dạng liên kết — Astryx render qua LinkProvider (next/link) đặt ở Providers. */
+export function LinkButton({ variant = "secondary", size, className, children, href, ...rest }: BtnProps & { href: string; prefetch?: boolean }) {
+  const label = rest["aria-label"] ?? textOf(children);
+  return (
+    <AxButton href={href} label={label} variant={AX_VARIANT[variant]} size={size} tooltip={rest.title} className={className} width={full(className)}>
+      {typeof children === "string" ? undefined : children}
+    </AxButton>
+  );
 }
 
-export function Card({ className, ...p }: ComponentProps<"div">) {
-  return <div {...p} className={cn("bg-surface border border-line rounded-card", className)} />;
+export function Card({ className, children, id }: { className?: string; children?: ReactNode; id?: string }) {
+  return <AxCard padding={0} id={id} className={className}>{children}</AxCard>;
 }
 
 export function CardHeader({ title, right, className }: { title: ReactNode; right?: ReactNode; className?: string }) {
   return (
     <div className={cn("flex items-center gap-2 px-4 pt-4 md:px-6", className)}>
-      <h2 className="text-[15px] font-semibold">{title}</h2>
+      <Heading level={2} className="!text-[15px]">{title}</Heading>
       {right ? <div className="ml-auto flex items-center gap-2 text-[13px] text-fg-2">{right}</div> : null}
     </div>
   );
@@ -35,12 +59,9 @@ export function CardHeader({ title, right, className }: { title: ReactNode; righ
 export const CardBody = ({ className, ...p }: ComponentProps<"div">) => <div {...p} className={cn("p-4 md:px-6 md:pb-6", className)} />;
 
 export type Tone = "ok" | "warn" | "bad" | "acc" | "neu";
-const TONE: Record<Tone, string> = {
-  ok: "bg-ok-soft text-ok-ink", warn: "bg-warn-soft text-warn-ink", bad: "bg-bad-soft text-bad-ink",
-  acc: "bg-accent-soft text-accent-ink", neu: "bg-surface-2 text-fg-2",
-};
-export function Badge({ tone = "neu", children, className }: { tone?: Tone; children: ReactNode; className?: string }) {
-  return <span className={cn("inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap", TONE[tone], className)}>{children}</span>;
+const AX_TONE = { ok: "success", warn: "warning", bad: "error", acc: "green", neu: "neutral" } as const;
+export function Badge({ tone = "neu", children, className, icon }: { tone?: Tone; children: ReactNode; className?: string; icon?: ReactNode }) {
+  return <AxBadge variant={AX_TONE[tone]} label={children} icon={icon} className={className} />;
 }
 
 export function PageHeader({ title, meta, actions, crumb }: { title: ReactNode; meta?: ReactNode; actions?: ReactNode; crumb?: ReactNode }) {
@@ -49,8 +70,8 @@ export function PageHeader({ title, meta, actions, crumb }: { title: ReactNode; 
       {crumb ? <div className="mb-2 text-[13px] text-fg-2">{crumb}</div> : null}
       <div className="flex flex-wrap items-center gap-3">
         <div className="min-w-0">
-          <h1 className="text-[22px] font-semibold leading-tight">{title}</h1>
-          {meta ? <div className="text-[13px] text-fg-2">{meta}</div> : null}
+          <Heading level={1}>{title}</Heading>
+          {meta ? <div className="mt-1 text-[13px] text-fg-2">{meta}</div> : null}
         </div>
         <div className="ml-auto flex flex-wrap items-center gap-2">{actions}</div>
       </div>
@@ -58,13 +79,9 @@ export function PageHeader({ title, meta, actions, crumb }: { title: ReactNode; 
   );
 }
 
-export function Empty({ title, action }: { title: string; action?: ReactNode }) {
-  return (
-    <div className="flex flex-col items-center gap-3 py-12 text-center">
-      <div className="text-[15px] font-medium text-fg-2">{title}</div>
-      {action}
-    </div>
-  );
+/** Trạng thái trống: 1 cụm ngắn + 1 CTA (design-spec 12 ma trận trạng thái). */
+export function Empty({ title, action, icon }: { title: string; action?: ReactNode; icon?: ReactNode }) {
+  return <div className="py-8"><EmptyState title={title} icon={icon} actions={action} isCompact /></div>;
 }
 
 export function Stat({ label, value, sub, tone }: { label: ReactNode; value: ReactNode; sub?: ReactNode; tone?: "bad" | "ok" }) {
@@ -77,24 +94,26 @@ export function Stat({ label, value, sub, tone }: { label: ReactNode; value: Rea
   );
 }
 
+/** Bảng tĩnh (server) cho màn chưa chuyển sang DataTable. Hàng 48px theo Ngoại lệ đã duyệt. */
 export function Table({ head, children, className }: { head: ReactNode[]; children: ReactNode; className?: string }) {
   return (
     <div className={cn("overflow-x-auto", className)}>
       <table className="w-full border-collapse text-[13px]">
         <thead>
-          <tr>{head.map((h, i) => <th key={i} className="h-10 whitespace-nowrap border-b border-line px-3 text-left font-medium text-fg-2">{h}</th>)}</tr>
+          <tr>{head.map((h, i) => <th key={i} className="h-10 whitespace-nowrap border-b border-line px-3 text-left font-semibold text-fg-2">{h}</th>)}</tr>
         </thead>
-        <tbody className="num [&_td]:h-12 [&_td]:border-b [&_td]:border-line [&_td]:px-3 [&_td]:whitespace-nowrap [&_tr:last-child_td]:border-b-0">{children}</tbody>
+        <tbody className="num [&_td]:h-12 [&_td]:border-b [&_td]:border-line [&_td]:px-3 [&_td]:whitespace-nowrap [&_tr:last-child_td]:border-b-0 [&_tr:hover]:bg-surface-2">{children}</tbody>
       </table>
     </div>
   );
 }
 
-const FIELD = "min-h-10 w-full rounded-ctl border border-line bg-surface px-3 text-fg placeholder:text-fg-2 disabled:opacity-60";
+// nợ: Field/Input/Select/Textarea còn là phần tử native (form server action không kiểm soát giá trị); trần: chưa có ô lỗi/trạng thái kiểu Astryx, nâng cấp sang TextInput/Selector (htmlName) khi chuyển từng form ở giai đoạn 2.
+const FIELD = "min-h-10 w-full rounded-ctl border border-line-strong bg-surface px-3 text-fg placeholder:text-fg-2 hover:border-fg-2 focus-visible:border-accent disabled:opacity-60";
 export function Field({ label, children, hint, error }: { label: string; children: ReactNode; hint?: ReactNode; error?: string }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="text-[13px] font-medium text-fg-2">{label}</span>
+      <span className="text-[13px] font-semibold text-fg">{label}</span>
       {children}
       {error ? <span className="text-xs font-medium text-bad">{error}</span> : hint ? <span className="text-xs text-fg-2">{hint}</span> : null}
     </label>
@@ -104,13 +123,4 @@ export const Input = ({ className, ...p }: ComponentProps<"input">) => <input {.
 export const Select = ({ className, ...p }: ComponentProps<"select">) => <select {...p} className={cn(FIELD, "pr-8", className)} />;
 export const Textarea = ({ className, ...p }: ComponentProps<"textarea">) => <textarea {...p} className={cn(FIELD, "py-2", className)} />;
 
-/** Thanh tiến độ có vạch mốc (design-spec §3 Tiến độ) */
-export function Progress({ value, mark, tone = "acc", height = 10, label }: { value: number; mark?: number; tone?: "acc" | "warn" | "ok"; height?: number; label: string }) {
-  const fill = tone === "warn" ? "bg-warn" : tone === "ok" ? "bg-ok" : "bg-accent";
-  return (
-    <div role="img" aria-label={label} className="relative w-full rounded-full bg-surface-2" style={{ height }}>
-      <span className={cn("absolute inset-y-0 left-0 rounded-full", fill)} style={{ width: `${Math.max(0, Math.min(100, value))}%` }} />
-      {mark != null ? <span className="absolute -inset-y-1.5 w-0.5 bg-fg" style={{ left: `${Math.max(0, Math.min(100, mark))}%` }} /> : null}
-    </div>
-  );
-}
+export { Progress } from "./progress";

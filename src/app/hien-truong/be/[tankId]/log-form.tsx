@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { enqueue, flush } from "@/lib/outbox";
-import { toast } from "@/components/ui/client";
+import { toast } from "@/components/ui/form";
 import { cn } from "@/components/ui/cn";
 
 type Kind = "feed" | "water" | "loss";

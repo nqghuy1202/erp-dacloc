@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { LogOut, Monitor } from "lucide-react";
 import { getT, requireActor } from "@/lib/session";
-import { ROLE_LABEL } from "@/components/status";
-import { ThemeToggle } from "@/components/ui/client";
+import { ROLE_LABEL } from "@/components/roles";
+import { FieldThemeToggle } from "@/components/field/client";
 import { FieldTop } from "@/components/field/top";
 import { logout, setLocale } from "../../actions";
 
@@ -27,7 +27,7 @@ export default async function MePage() {
               <button key={l} name="locale" value={l} aria-pressed={locale === l} className={`min-h-12 rounded-xl border font-semibold ${locale === l ? "border-2 border-accent bg-accent-soft text-accent-ink" : "border-line"}`}>{l === "vi" ? "Tiếng Việt" : "English"}</button>
             ))}
           </form>
-          <ThemeToggle labels={[t("common.light"), t("common.dark")]} />
+          <FieldThemeToggle labels={[t("common.light"), t("common.dark")]} />
         </div>
         <form action={logout}><button className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface font-semibold"><LogOut size={18} />{t("common.logout")}</button></form>
       </div>

@@ -12,3 +12,8 @@ node_modules/
 test-results/
 playwright-report/
 .vercel
+
+# Astryx theme editor — ảnh/trang xem thử sinh lại bằng `npx astryx experimental theme editor show dacloc --png`
+themes/*/*.png
+themes/*/preview.html
+themes/*/sheet.html

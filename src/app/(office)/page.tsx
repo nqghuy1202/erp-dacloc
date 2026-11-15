@@ -6,7 +6,7 @@ import { getT, requireActor } from "@/lib/session";
 import { overview } from "@/server/planning";
 import { lowStock, openAlerts, survival30, weeklyHarvest } from "@/server/queries";
 import { runEscalation } from "@/server/alerts";
-import { Badge, Card, CardBody, CardHeader, Empty, PageHeader, Progress, Stat, Table } from "@/components/ui";
+import { Badge, Card, CardBody, CardHeader, Empty, LinkButton, PageHeader, Progress, Stat, Table } from "@/components/ui";
 import { WeeklyChart } from "@/components/charts/weekly";
 import { ymd } from "@/server/util";
 
@@ -24,11 +24,14 @@ export default async function OverviewPage() {
   const pctDone = o.planMonth ? (o.actualMonth / o.planMonth) * 100 : 0;
   const pctMark = o.planMonth && o.planToDate != null ? (o.planToDate / o.planMonth) * 100 : undefined;
   const gap = o.planToDate != null ? o.actualMonth - o.planToDate : null;
+  // Primary của S1 (design-spec 12 Screen map): mở trại chậm nhất so với mốc hôm nay
+  const slowest = [...o.ranking].filter((r) => r.pctOfToDate != null).sort((a, b) => (a.pctOfToDate ?? 0) - (b.pctOfToDate ?? 0))[0];
   const maxPct = Math.max(40, ...o.ranking.map((r) => r.pct ?? 0), pctMark ?? 0);
 
   return (
     <>
-      <PageHeader title={t("ov.title")} meta={`${today.slice(5, 7)}/${today.slice(0, 4)} · ${o.ranking.length} trại`} />
+      <PageHeader title={t("ov.title")} meta={`${today.slice(5, 7)}/${today.slice(0, 4)} · ${o.ranking.length} trại`}
+        actions={slowest ? <LinkButton variant="primary" href={`/san-xuat/trai/${slowest.farmId}`}>{`Xem trại chậm nhất · ${slowest.name}`}</LinkButton> : null} />
 
       <Card className="mb-4 grid gap-4 p-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-x-8 md:p-6">
         <div>
@@ -41,9 +44,8 @@ export default async function OverviewPage() {
           <div className="num flex flex-wrap items-end gap-6 md:gap-8">
             <div><div className="text-[13px] text-fg-2">{t("ov.planToDate")}</div><div className="text-[22px] font-semibold">{fmtCompact(locale, o.planToDate ?? 0)}</div></div>
             <div><div className="text-[13px] text-fg-2">{t("ov.pctToDate")}</div><div className="text-[22px] font-semibold">{o.planToDate ? fmtNum(locale, (o.actualMonth / o.planToDate) * 100) : "—"}%</div></div>
-            <Badge tone={gap < 0 ? "warn" : "ok"} className="px-3 py-1 text-sm">
-              {gap < 0 ? <ArrowDown size={14} className="mr-1" /> : <ArrowUp size={14} className="mr-1" />}
-              {gap < 0 ? t("ov.behind") : t("ov.ahead")} {fmtCompact(locale, Math.abs(gap))} PL
+            <Badge tone={gap < 0 ? "warn" : "ok"} icon={gap < 0 ? <ArrowDown size={14} aria-hidden /> : <ArrowUp size={14} aria-hidden />}>
+              {`${gap < 0 ? t("ov.behind") : t("ov.ahead")} ${fmtCompact(locale, Math.abs(gap))} PL`}
             </Badge>
           </div>
         ) : (

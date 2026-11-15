@@ -1,52 +1,65 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Nền: Tailwind v4 + Astryx (design-spec 12 §5, v5). Thứ tự layer khai ở layers.css. */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "@astryxdesign/core/reset.css";
+@import "@astryxdesign/core/astryx.css";
+@import "tailwindcss/utilities.css" layer(utilities);
 
-/* Token theo design-spec 12 §5 (v3 — nhận diện Đắc Lộc) — giá trị RGB để Tailwind dùng alpha.
-   accent = xanh lá logo #108040 · ok = xanh ngọc (tách họ với accent) · sidebar = xám than như thanh menu thuysandacloc.vn */
+/* Tên token của app (bg-surface, text-fg-2, bg-accent…) trỏ vào token Astryx của theme `dacloc`
+   (themes/dacloc — sửa màu bằng `npx astryx experimental theme editor set dacloc …`, KHÔNG sửa ở đây).
+   `reference inline`: không phát biến ra :root (tránh vòng lặp --color-accent), utility đọc thẳng biến Astryx. */
+@theme reference inline {
+  --color-bg: var(--color-background-body);
+  --color-surface: var(--color-background-surface);
+  --color-surface-2: var(--color-background-muted);
+  --color-line: var(--color-border);
+  --color-line-strong: var(--color-border-emphasized);
+  --color-fg: var(--color-text-primary);
+  --color-fg-2: var(--color-text-secondary);
+  --color-accent: var(--color-accent);
+  --color-accent-fg: var(--color-on-accent);
+  --color-accent-soft: var(--color-accent-muted);
+  --color-accent-ink: var(--color-text-accent);
+  --color-ok: var(--color-text-success);
+  --color-ok-fill: var(--color-success);
+  --color-ok-fg: var(--color-on-success);
+  --color-ok-soft: var(--color-success-muted);
+  --color-ok-ink: var(--color-on-success-muted);
+  --color-warn: var(--color-text-warning);
+  --color-warn-fill: var(--color-warning);
+  --color-warn-soft: var(--color-warning-muted);
+  --color-warn-ink: var(--color-on-warning-muted);
+  --color-bad: var(--color-text-error);
+  --color-bad-fill: var(--color-error);
+  --color-bad-soft: var(--color-error-muted);
+  --color-bad-ink: var(--color-on-error-muted);
+  --color-brand: var(--app-brand);
+  --color-band: var(--app-band);
+  --radius-card: var(--radius-container);
+  --radius-ctl: var(--radius-element);
+  --font-sans: var(--font-family-body);
+}
+@theme {
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+/* dark: theo data-theme trên <html> (Theme của Astryx đồng bộ thuộc tính này) */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Biến riêng của app (không có trong Astryx): logo, dải ngưỡng biểu đồ, dải sóng đăng nhập. */
 :root {
-  --bg: 248 250 252; --surface: 255 255 255; --surface-2: 241 245 249; --line: 226 232 240;
-  --fg: 15 23 42; --fg-2: 71 85 105;
-  --accent: 16 128 64; --accent-fg: 255 255 255; --accent-soft: 223 243 230; --accent-ink: 11 90 45;
-  --ok: 15 118 110; --ok-fg: 255 255 255; --ok-soft: 204 251 241; --ok-ink: 19 78 74;
-  --warn: 217 119 6; --warn-soft: 254 243 199; --warn-ink: 120 53 15;
-  --bad: 220 38 38; --bad-soft: 254 226 226; --bad-ink: 127 29 29;
-  --brand: 16 128 64;
-  --band: 226 232 240; --sidebar: 54 64 75; --sidebar-fg: 203 213 225; --sidebar-active: 74 85 99;
-  --wave-1: 178 232 226; --wave-2: 207 239 214;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: 2 6 23; --surface: 15 23 42; --surface-2: 30 41 59; --line: 30 41 59;
-    --fg: 241 245 249; --fg-2: 148 163 184;
-    --accent: 74 197 122; --accent-fg: 2 6 23; --accent-soft: 20 61 38; --accent-ink: 187 240 207;
-    --ok: 45 212 191; --ok-fg: 2 6 23; --ok-soft: 19 78 74; --ok-ink: 153 246 228;
-    --warn: 251 191 36; --warn-soft: 120 53 15; --warn-ink: 253 230 138;
-    --bad: 248 113 113; --bad-soft: 127 29 29; --bad-ink: 254 202 202;
-    --band: 30 41 59; --sidebar: 29 35 43; --sidebar-fg: 176 186 199; --sidebar-active: 50 59 70;
-    --wave-1: 17 64 66; --wave-2: 18 52 38;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: 2 6 23; --surface: 15 23 42; --surface-2: 30 41 59; --line: 30 41 59;
-  --fg: 241 245 249; --fg-2: 148 163 184;
-  --accent: 74 197 122; --accent-fg: 2 6 23; --accent-soft: 20 61 38; --accent-ink: 187 240 207;
-  --ok: 45 212 191; --ok-fg: 2 6 23; --ok-soft: 19 78 74; --ok-ink: 153 246 228;
-  --warn: 251 191 36; --warn-soft: 120 53 15; --warn-ink: 253 230 138;
-  --bad: 248 113 113; --bad-soft: 127 29 29; --bad-ink: 254 202 202;
-  --band: 30 41 59; --sidebar: 29 35 43; --sidebar-fg: 176 186 199; --sidebar-active: 50 59 70;
-  --wave-1: 17 64 66; --wave-2: 18 52 38;
-  color-scheme: dark;
+  --app-brand: #108040;
+  --app-band: light-dark(#e2e8f0, #1e293b);
+  --app-wave-1: light-dark(#b2e8e2, #114042);
+  --app-wave-2: light-dark(#cfefd6, #123426);
 }
 
-html, body { background: rgb(var(--bg)); color: rgb(var(--fg)); }
-body { font-size: 14px; line-height: 1.5; }
-.num { font-variant-numeric: tabular-nums; }
-::selection { background: rgb(var(--accent) / 0.25); }
-input, textarea { caret-color: rgb(var(--accent)); }
-a { text-underline-offset: 3px; }
-:focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 2px; }
-dialog::backdrop { background: rgb(15 23 42 / 0.45); }
+@layer base {
+  body { font-size: 14px; line-height: 1.5; background: var(--color-background-body); color: var(--color-text-primary); }
+  ::selection { background: color-mix(in srgb, var(--color-accent) 25%, transparent); }
+  input, textarea { caret-color: var(--color-accent); }
+  a { text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  dialog::backdrop { background: var(--color-overlay); }
+}
+@utility num { font-variant-numeric: tabular-nums; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

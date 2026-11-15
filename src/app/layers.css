@@ -1,0 +1,3 @@
+/* Thứ tự cascade layer — PHẢI là stylesheet đầu tiên của trang (import trước globals.css trong layout gốc).
+   Next.js hoist @import nên dòng @layer phải ở file riêng (astryx docs migration/migration-setup). */
+@layer reset, theme, base, astryx-base, astryx-theme, components, utilities;

@@ -28,7 +28,7 @@ export default async function OfficeLayout({ children }: { children: React.React
   );
   return (
     <Shell items={items} traceLabel={t("nav.trace")} right={right}
-      labels={{ openMenu: t("top.openMenu"), closeMenu: t("top.closeMenu"), hideSidebar: t("top.hideSidebar"), showSidebar: t("top.showSidebar") }}>
+      labels={{ nav: t("top.mainNav"), top: t("top.topNav") }}>
       {children}
     </Shell>
   );

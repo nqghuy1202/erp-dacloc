@@ -23,7 +23,7 @@ function ConfirmDialog({ trigger, title, body, confirm, variant = "primary", chi
   trigger: ReactNode; title: string; body: ReactNode; confirm: string; variant?: "primary" | "danger"; children?: ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
-  const btn = variant === "danger" ? "bg-bad text-white border-bad" : "bg-accent text-accent-fg border-accent";
+  const btn = variant === "danger" ? "bg-bad-fill text-white border-bad" : "bg-accent text-accent-fg border-accent";
   return (
     <>
       <button type="button" onClick={() => ref.current?.showModal()} className={`inline-flex min-h-10 items-center justify-center gap-2 rounded-ctl border px-4 font-medium ${variant === "danger" ? "border-line bg-surface text-bad-ink hover:bg-bad-soft" : btn}`}>{trigger}</button>
@@ -70,7 +70,7 @@ export function FinalizeForm({ action, code, subject, indicators, lab }: {
               {([["neg", "Âm tính"], ["pos", "Dương tính"]] as const).map(([v, label]) => (
                 <label key={v} className="relative inline-flex min-h-10 cursor-pointer items-center rounded-md px-4 font-medium text-fg-2 has-[:checked]:bg-surface has-[:checked]:text-fg has-[:checked]:shadow-sm has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent">
                   <input type="radio" name={free ? `r:__${i}` : `r:${ind}`} value={v} defaultChecked={v === "neg"} className="sr-only" />
-                  {v === "pos" ? <span className="mr-2 h-2 w-2 rounded-full bg-bad" aria-hidden /> : <span className="mr-2 h-2 w-2 rounded-full bg-ok" aria-hidden />}
+                  {v === "pos" ? <span className="mr-2 h-2 w-2 rounded-full bg-bad-fill" aria-hidden /> : <span className="mr-2 h-2 w-2 rounded-full bg-ok-fill" aria-hidden />}
                   {label}
                 </label>
               ))}
