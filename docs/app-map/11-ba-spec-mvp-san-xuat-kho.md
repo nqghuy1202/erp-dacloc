@@ -2,9 +2,8 @@
 
 > Load khi: task chạm hành vi / nghiệp vụ / flow / acceptance của sản xuất giống (bố mẹ → PL), nhật ký bể, xét nghiệm, lô thành phẩm, truy xuất QR, kho vật tư.
 covers: src/server, src/app/(office), src/app/hien-truong, src/app/api
-last_verified: 2026-11-13
+last_verified: 2026-11-15
 ttl_days: 90
-<!-- DOC-STATUS: SUSPECT (2026-11-13) — code 'src/app/(office)' doi sau last_verified. DOI CHIEU VOI CODE truoc khi tin. May quan ly dong nay, dung sua tay. -->
 
 > **Mục đích**: oracle HÀNH VI cho MVP — USER nào làm nghiệp vụ gì, flow vào/ra sao, đúng-sai đo bằng AC nào. KHÔNG mô tả giao diện (việc của design-spec). Nguồn bối cảnh: [docs/research/00-discovery-dac-loc.md](../research/00-discovery-dac-loc.md).
 
