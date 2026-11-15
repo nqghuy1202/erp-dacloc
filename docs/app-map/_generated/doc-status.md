@@ -5,7 +5,7 @@
 |---|---|---|
 | docs/app-map/01-pages-and-navigation.md | VERIFIED | ok |
 | docs/app-map/02-dialogs-and-forms.md | VERIFIED | ok |
-| docs/app-map/03-database-and-automation.md | SUSPECT | code 'src/app/api/cron' doi sau last_verified |
+| docs/app-map/03-database-and-automation.md | VERIFIED | ok |
 | docs/app-map/04-edge-functions.md | VERIFIED | ok |
 | docs/app-map/05-permissions-and-gates.md | VERIFIED | ok |
 | docs/app-map/06-user-flows.md | VERIFIED | ok |
