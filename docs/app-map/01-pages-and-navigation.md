@@ -34,3 +34,4 @@ ttl_days: 90
 
 <!-- re-verified: 2026-11-13 16:40 - đổi icon nút menu header sang 3 gạch; route, điều hướng, vai trò không đổi -->
 <!-- re-verified: 2026-11-15 20:00 - khung văn phòng chuyển sang Astryx AppShell/SideNav/TopNav (ADR 0003); route, vai trò, mục điều hướng không đổi -->
+<!-- re-verified: 2026-11-15 20:15 - giai đoạn 2 Astryx: không thêm/bớt route; trang lỗi dùng ErrorState chung; điều hướng, vai trò không đổi -->

@@ -1,9 +1,12 @@
 "use client";
+import { Button as AxButton } from "@astryxdesign/core/Button";
+import { textOf } from "@/components/ui/text";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Copy, Plus, Trash2 } from "lucide-react";
 import { ActionForm, Sheet, Submit, type ActionState } from "@/components/ui/client";
-import { Button, Empty, Field, Input, Select, Textarea } from "@/components/ui";
+import { Button, Empty } from "@/components/ui";
+import { Field, Input, Select, Textarea } from "@/components/ui/fields";
 import { cn } from "@/components/ui/cn";
 import { fmtNum, type Locale } from "@/lib/i18n";
 
@@ -33,11 +36,9 @@ function shift(date: string, fromMonth: string, toMonth: string) {
 function IntentButton({ intent, primary, children, disabled }: { intent: "save" | "submit"; primary?: boolean; children: React.ReactNode; disabled?: boolean }) {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" name="intent" value={intent} disabled={pending || disabled} aria-busy={pending}
-      className={cn("inline-flex min-h-10 items-center justify-center gap-2 rounded-ctl border px-4 font-medium disabled:opacity-60",
-        primary ? "border-accent bg-accent text-accent-fg" : "border-line bg-surface text-fg")}>
-      {children}
-    </button>
+    <AxButton type="submit" name="intent" value={intent} label={textOf(children)} variant={primary ? "primary" : "secondary"} isLoading={pending} isDisabled={disabled}>
+      {typeof children === "string" ? undefined : children}
+    </AxButton>
   );
 }
 

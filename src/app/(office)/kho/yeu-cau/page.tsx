@@ -3,7 +3,8 @@ import { fmtAgo, fmtNum } from "@/lib/i18n";
 import { getT, requireActor } from "@/lib/session";
 import { centralWarehouse, stockList } from "@/server/inventory";
 import { farmsInScope, materialsAll, requestQueue } from "@/server/queries-admin";
-import { Badge, Card, CardBody, CardHeader, Empty, PageHeader, Table } from "@/components/ui";
+import { Badge, Card, CardBody, CardHeader, Empty, PageHeader } from "@/components/ui";
+import { SearchTable } from "@/components/ui/search-rows";
 import { StatusBadge } from "@/components/status";
 import { CancelRequestButton, IssueSheet, NewRequestSheet, RejectSheet } from "./forms";
 import { cancelReq, issueReq, rejectReq, sendRequest } from "./actions";
@@ -50,7 +51,7 @@ export default async function RequestsPage() {
         <CardHeader title="Chờ xử lý" right={<span>cũ nhất trước</span>} />
         <CardBody>
           {open.length ? (
-            <Table head={["Mã", "Trại", "Vật tư", "Chờ", "Trạng thái", ""]}>
+            <SearchTable search="Tìm mã, trại, vật tư" head={["Mã", "Trại", "Vật tư", "Chờ", "Trạng thái", ""]}>
               {open.map((q, i) => {
                 const overdue = now.getTime() - q.r.createdAt.getTime() > DAY;
                 return (
@@ -75,7 +76,7 @@ export default async function RequestsPage() {
                   </tr>
                 );
               })}
-            </Table>
+            </SearchTable>
           ) : <Empty title="Không có yêu cầu chờ" />}
         </CardBody>
       </Card>
@@ -84,7 +85,7 @@ export default async function RequestsPage() {
         <CardHeader title="Đã đóng gần đây" />
         <CardBody>
           {closed.length ? (
-            <Table head={["Mã", "Trại", "Vật tư", "Gửi", "Trạng thái"]}>
+            <SearchTable search="Tìm mã, trại, vật tư" head={["Mã", "Trại", "Vật tư", "Gửi", "Trạng thái"]}>
               {closed.map((q) => (
                 <tr key={q.r.id} className="align-top">
                   <td className="py-3 font-medium">{q.r.code}</td>
@@ -97,7 +98,7 @@ export default async function RequestsPage() {
                   </td>
                 </tr>
               ))}
-            </Table>
+            </SearchTable>
           ) : <Empty title="Chưa có yêu cầu đã đóng" />}
         </CardBody>
       </Card>

@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
 import { Plus, Send, Trash2 } from "lucide-react";
-import { ActionForm, Sheet, Submit, type ActionState } from "@/components/ui/client";
-import { Button, Field, Input, Select, Textarea } from "@/components/ui";
+import { ActionForm, Sheet, Submit, type ActionState, ConfirmSubmit } from "@/components/ui/client";
+import { Button } from "@/components/ui";
+import { Field, Input, Select, Textarea } from "@/components/ui/fields";
 import { fmtNum, type Locale } from "@/lib/i18n";
 
 type Act = (prev: ActionState, f: FormData) => Promise<ActionState>;
@@ -108,7 +109,7 @@ export function RejectSheet({ action, id, code }: { action: Act; id: number; cod
         <ActionForm action={action} onDone={close} className="flex flex-col gap-4">
           <input type="hidden" name="id" value={id} />
           <Field label="Lý do từ chối"><Textarea name="reason" rows={3} required maxLength={300} /></Field>
-          <Submit variant="danger">Từ chối yêu cầu</Submit>
+          <ConfirmSubmit variant="danger" title={`Từ chối ${code}`} actionLabel="Từ chối" description={`Yêu cầu ${code} chuyển sang Từ chối kèm lý do. Không mở lại được.`}>Từ chối yêu cầu</ConfirmSubmit>
         </ActionForm>
       )}
     </Sheet>

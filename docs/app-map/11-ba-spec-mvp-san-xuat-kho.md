@@ -662,3 +662,4 @@ ttl_days: 90
 
 <!-- re-verified: 2026-11-13 18:10 - v5 thêm NV16, NV0f, AC-38..52 theo trả lời của user; chưa có code, AC-1..24 không đổi -->
 <!-- re-verified: 2026-11-15 20:00 - chỉ đổi giao diện (ADR 0003): không đổi server, server action, quy tắc nghiệp vụ hay AC; S6 tìm/sắp xếp phía trình duyệt không đổi dữ liệu trả về -->
+<!-- re-verified: 2026-11-15 20:15 - giai đoạn 2 Astryx chỉ đổi giao diện form/bảng; server action, quy tắc nghiệp vụ, AC không đổi; ô tìm bảng lọc phía trình duyệt, không đổi dữ liệu trả về -->

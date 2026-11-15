@@ -118,10 +118,11 @@ Một thanh duy nhất trên đầu vùng làm việc của mọi màn `(office)
 ## 3. Component (shadcn)
 | Nhu cầu | Component | Ghi chú |
 |---|---|---|
-| Danh sách nghiệp vụ | `DataTable` (Astryx Table, `src/components/ui/data-table.tsx`) | tìm không dấu + sắp xếp cột phía trình duyệt trên trang đã tải; lọc theo trại/giai đoạn/trạng thái vẫn ở server (form GET). Đã áp: S6. Còn lại: giai đoạn 2 |
+| Danh sách nghiệp vụ | `DataTable` (Astryx Table + tìm + sắp xếp, `ui/data-table.tsx`) cho S6; `SearchTable` (bảng tĩnh + ô tìm, `ui/search-rows.tsx`) cho S4, S8, S10–S13, S15, S16 | tìm không dấu phía trình duyệt trên trang đã tải; lọc theo trại/giai đoạn/trạng thái vẫn ở server (form GET). Bảng chi tiết (S3, S13 chi tiết, S14) và khối "vật tư dưới mức" S1 giữ `Table` tĩnh |
 | Lưới bể / trại | Card nhỏ dạng `<button>` | toàn thẻ bấm được, có focus ring |
-| Form ngắn | Sheet (desktop) / Drawer (mobile) | |
-| Xác nhận không đảo được (chốt phiếu, huỷ lô) | AlertDialog | nêu hậu quả bằng số: "Huỷ lô L-100 — 820.000 con" |
+| Form ngắn | `Sheet` = Astryx `Drawer` phải, rộng 520px, toàn màn < 640px, `purpose="form"` (bấm ra ngoài không đóng, Esc đóng) | form dựng lại mỗi lần mở |
+| Ô nhập | `Field` + `Input`/`Select`/`Textarea` (`ui/fields.tsx`) = Astryx `TextInput`/`Selector`/`TextArea`, giữ API native (name/defaultValue) qua `htmlName` | Selector > 8 lựa chọn có ô tìm; mobile mở dạng bottom sheet (`presentation="adaptive"`). Ô ngày/số/giờ/tệp giữ input native (bàn phím số, lịch hệ điều hành, min/max/step) |
+| Xác nhận không đảo được (chốt phiếu, huỷ lô) | `ConfirmSubmit` (Astryx AlertDialog, `ui/client.tsx`) | nêu hậu quả bằng số: "Huỷ lô L-100 — 820.000 con"; nút Quay lại là focus mặc định; kiểm ô bắt buộc trước khi hỏi. Áp: chốt/huỷ phiếu xét nghiệm, huỷ lô (sự cố), huỷ mẻ, thu hoạch, chốt phiếu nhập, từ chối yêu cầu |
 | Trạng thái | Badge Astryx (`variant` success/warning/error/green/neutral) ≤ 2 từ | `Chậm` · `Đúng tiến độ` · `Trễ` · `Đang ương` · `Cách ly` · `Sẵn sàng` · `Loại bỏ` · `Chờ cấp` · `Đã chốt` · `Chờ duyệt` |
 | Thông báo kết quả | Toast riêng (`ui/form.tsx`, không phụ thuộc Astryx để dùng ở PWA) | xoá/huỷ được → toast có Hoàn tác 10 giây |
 | Biểu đồ | shadcn chart / Recharts | đường cho chỉ số nước, cột cho sản lượng |
@@ -214,5 +215,6 @@ Screenshot từng màn ở 375 / 768 / 1280, sáng + tối, đối chiếu từn
 - v3 (2026-11-13): theme nhận diện Đắc Lộc — chạy lại 04 §2 với logo thật: accent teal → xanh lá logo `#108040`, success green → teal (tách họ), sidebar xám than `#36404B`, logo ở sidebar/đăng nhập/tem, icon PWA vẽ lại, đăng nhập có dải sóng. Font giữ system stack (user chọn). Ô mã nhân viên bỏ ép in hoa (server đã chuẩn hoá).
 - v4 (2026-11-13): thêm thanh header văn phòng §1b (nút menu, chuông, sáng/tối, tài khoản); chân sidebar chỉ giữ ô tra mã.
 - v5 (2026-11-15): chuyển sang design system Astryx (ADR 0003) — giai đoạn 1: nền Tailwind 4 + theme `dacloc`, khung AppShell/SideNav/TopNav (thu gọn thành rail, ngăn menu mobile), component dùng chung bọc Astryx; màn mẫu: S1 thêm primary "Xem trại chậm nhất · <trại>" (đúng Screen map), S6 bảng tìm không dấu + sắp xếp, M1 thêm nút cố định "Ghi việc kế tiếp · <bể>" 56dp ở vùng ngón cái (đúng Screen map). PWA hiện trường + đăng nhập dùng bản nhẹ theo token (JS −1…+2%). Sáng/tối lưu cookie `theme`. Ảnh: `_screens/astryx/`.
+- v5.1 (2026-11-15): giai đoạn 2 — ô nhập dùng chung sang Astryx (TextInput/Selector/TextArea), Sheet → Astryx Drawer, hành động không đảo được hỏi qua AlertDialog (`ConfirmSubmit`, mô tả hậu quả bằng số), ô tìm cho 10 bảng danh sách (`SearchTable`), trang lỗi dùng `ErrorState` chung. Không đổi hành vi nghiệp vụ.
 
 **Last Updated**: 2026-11-15

@@ -1,7 +1,7 @@
 "use client";
 import { Lock, LockOpen, UserPlus } from "lucide-react";
 import { ActionForm, Sheet, Submit, type ActionState } from "@/components/ui/client";
-import { Field, Input, Select } from "@/components/ui";
+import { Field, Input, Select } from "@/components/ui/fields";
 
 type Act = (prev: ActionState, f: FormData) => Promise<ActionState>;
 type Farm = { id: number; name: string; code: string };

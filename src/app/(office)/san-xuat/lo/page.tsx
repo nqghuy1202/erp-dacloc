@@ -6,7 +6,8 @@ import { getT, requireActor } from "@/lib/session";
 import { canFarm } from "@/server/access";
 import { seesAllFarms } from "@/server/types";
 import { LOT_PAGE, lotList, lotProgress, stageCodes, visibleFarms } from "@/server/queries-production";
-import { Button, Card, Empty, LinkButton, PageHeader, Select } from "@/components/ui";
+import { Button, Card, Empty, LinkButton, PageHeader } from "@/components/ui";
+import { Field, Select } from "@/components/ui/fields";
 import { DataTable, type DataRow } from "@/components/ui/data-table";
 import { StatusBadge } from "@/components/status";
 
@@ -47,23 +48,23 @@ export default async function LotsPage({ searchParams }: { searchParams: Promise
 
       <Card>
         <form method="get" className="flex flex-wrap items-end gap-3 border-b border-line p-4">
-          <label className="flex flex-col gap-1 text-[13px] font-medium text-fg-2">Trại
-            <Select name="farm" defaultValue={farmId ? String(farmId) : "all"} className="min-w-44">
+          <div className="min-w-44"><Field label="Trại">
+            <Select name="farm" defaultValue={farmId ? String(farmId) : "all"}>
               {farmsList.length > 1 || seesAllFarms(actor) ? <option value="all">Tất cả trại</option> : null}
               {farmsList.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
             </Select>
-          </label>
-          <label className="flex flex-col gap-1 text-[13px] font-medium text-fg-2">Giai đoạn
-            <Select name="stage" defaultValue={stageCode ?? ""} className="min-w-32">
+          </Field></div>
+          <div className="min-w-32"><Field label="Giai đoạn">
+            <Select name="stage" defaultValue={stageCode ?? ""}>
               <option value="">Tất cả</option>
               {stagesList.map((s) => <option key={s.code} value={s.code}>{s.name}</option>)}
             </Select>
-          </label>
-          <label className="flex flex-col gap-1 text-[13px] font-medium text-fg-2">Trạng thái
-            <Select name="status" defaultValue={status ?? "all"} className="min-w-36">
+          </Field></div>
+          <div className="min-w-36"><Field label="Trạng thái">
+            <Select name="status" defaultValue={status ?? "all"}>
               {STATUSES.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
             </Select>
-          </label>
+          </Field></div>
           <Button type="submit">Lọc</Button>
         </form>
 

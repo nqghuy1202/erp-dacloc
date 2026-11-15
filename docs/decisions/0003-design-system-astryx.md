@@ -23,7 +23,9 @@ Giao diện MVP dùng bộ component tự viết tối giản (ADR 0001, dòng U
 
 ## Hệ quả
 - JS tải lần đầu của màn văn phòng tăng ~ +62…+68% (≈ 110 → 185 kB); `/san-xuat/lo` 109 → 271 kB (+149%) do Table. Chấp nhận cho văn phòng (máy bàn, mạng ổn định). `// nợ: Table Astryx nặng; trần 271 kB ở S6, nâng cấp: lazy-load DataTable khi bảng > 1 màn hoặc khi đo LCP văn phòng > 2,5s`.
-- Field/Input/Select/Textarea vẫn là phần tử native (server action dùng form không kiểm soát) — chuyển sang `TextInput`/`Selector` (`htmlName`) từng form ở giai đoạn 2.
+- Giai đoạn 2: `Field/Input/Select/Textarea` (`ui/fields.tsx`) bọc Astryx nhưng giữ API native — giá trị gửi qua `htmlName`, ô không kiểm soát tự về giá trị đầu khi form `reset`, thuộc tính `required/maxLength/pattern` đi qua rest props tới `<input>` nên trình duyệt vẫn kiểm. `Selector` chỉ có hidden input → không chặn được "bắt buộc" ở trình duyệt; server vẫn kiểm (zod). Ô ngày/số/giờ/tệp giữ native.
+- Module client (`ui/fields.tsx`, `ui/search-rows.tsx`) KHÔNG re-export qua `ui/index.tsx`: đo 2026-11-15, re-export làm mọi trang văn phòng (kể cả không có form) +55 kB. Import trực tiếp `@/components/ui/fields`, `@/components/ui/search-rows`.
+- Đo sau giai đoạn 2: trang văn phòng không form ≈ 185–195 kB; trang có form/Drawer ≈ 240–290 kB (gốc ≈ 110 kB). `// nợ: form văn phòng ~290 kB; trần: chấp nhận cho máy bàn, nâng cấp: lazy-load Drawer/Selector (next/dynamic) khi đo được tải chậm ở văn phòng trại`.
 - Build in 61 cảnh báo CSS `Unknown at rule: @property` từ trình tối ưu CSS của Next — vô hại (trình duyệt hỗ trợ).
 - Người đã chọn sáng/tối trước đây (localStorage) sẽ về theo hệ điều hành một lần, chọn lại thì lưu cookie.
 - `npx astryx init` đã thêm khối `ASTRYX` vào CLAUDE.md gốc (khối do Astryx quản lý).

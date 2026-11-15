@@ -3,6 +3,7 @@ import { fmtNum } from "@/lib/i18n";
 import { getT, requireActor } from "@/lib/session";
 import { farmsWithTankCount, materialsAll, speciesCatalog } from "@/server/queries-admin";
 import { Badge, Card, CardBody, CardHeader, Empty, PageHeader, Table } from "@/components/ui";
+import { SearchTable } from "@/components/ui/search-rows";
 import { BannedToggle, FarmSheet, ImportForm } from "./forms";
 import { createFarmAction, importMaterialsAction, importTanksAction, setBannedAction } from "./actions";
 
@@ -28,7 +29,7 @@ export default async function CatalogPage() {
           <CardHeader title="Trại" right={<FarmSheet action={createFarmAction} />} />
           <CardBody>
             {farms.length ? (
-              <Table head={["Mã", "Tên trại", "Loại", "Số bể"]}>
+              <SearchTable search="Tìm mã, tên trại" head={["Mã", "Tên trại", "Loại", "Số bể"]}>
                 {farms.map(({ f, tanks }) => (
                   <tr key={f.id}>
                     <td className="font-medium">{f.code}</td><td>{f.name}</td>
@@ -36,7 +37,7 @@ export default async function CatalogPage() {
                     <td className="text-right">{fmtNum(locale, tanks)}</td>
                   </tr>
                 ))}
-              </Table>
+              </SearchTable>
             ) : <Empty title="Chưa có trại" />}
           </CardBody>
         </Card>
@@ -53,7 +54,7 @@ export default async function CatalogPage() {
         <CardHeader title="Vật tư" right={<span>{mats.filter((m) => m.banned).length} cấm dùng</span>} />
         <CardBody className="flex flex-col gap-6">
           {mats.length ? (
-            <Table head={["Mã", "Tên vật tư", "Đơn vị", "Nhóm", "Tối thiểu", "Trạng thái", ""]}>
+            <SearchTable search="Tìm mã, tên vật tư, nhóm" head={["Mã", "Tên vật tư", "Đơn vị", "Nhóm", "Tối thiểu", "Trạng thái", ""]}>
               {mats.map((m) => (
                 <tr key={m.id}>
                   <td className="font-medium">{m.code}</td>
@@ -65,7 +66,7 @@ export default async function CatalogPage() {
                   <td><div className="flex justify-end"><BannedToggle action={setBannedAction} materialId={m.id} banned={m.banned} name={m.name} /></div></td>
                 </tr>
               ))}
-            </Table>
+            </SearchTable>
           ) : <Empty title="Chưa có vật tư" />}
           <div className="border-t border-line pt-4">
             <h3 className="mb-3 text-[13px] font-semibold">Import vật tư</h3>

@@ -7,7 +7,7 @@ ttl_days: 90
 
 Menu tài khoản (header, `shell/account-menu.tsx`): popover không modal, chứa form đổi ngôn ngữ (`setLocale`) và đăng xuất (`logout`); đóng bằng Esc, bấm ngoài, rời focus. Ngăn menu mobile do Astryx `AppShell` dựng (dialog modal, bẫy focus, Esc đóng, trả focus về nút).
 
-Cơ chế: `Sheet` (`<dialog>` bên phải, toàn màn trên mobile; nút mở/đóng là Astryx Button/IconButton) + `ActionForm` (`ui/form.tsx`; lỗi hiện tại chỗ, toast khi xong). Nút gửi: `Submit` (Astryx, văn phòng) / `FieldSubmit` (nhẹ, hiện trường + đăng nhập). Xác nhận không đảo được dùng `<dialog>` riêng nêu hậu quả.
+Cơ chế: `Sheet` (Astryx `Drawer` bên phải 520px, toàn màn trên mobile, bấm ra ngoài không đóng — giữ dữ liệu đang nhập) + `ActionForm` (`ui/form.tsx`; lỗi hiện tại chỗ, toast khi xong). Ô nhập `Field/Input/Select/Textarea` từ `ui/fields.tsx` (Astryx). Nút gửi: `Submit` (Astryx, văn phòng) / `FieldSubmit` (nhẹ, hiện trường + đăng nhập). Hành động không đảo được: `ConfirmSubmit` → AlertDialog nêu hậu quả (chốt/huỷ phiếu xét nghiệm, huỷ lô, huỷ mẻ, thu hoạch, chốt phiếu nhập, từ chối yêu cầu); huỷ phiếu xét nghiệm nay mở trong Sheet có ô lý do. 
 
 | Form | Ở màn | Service | AC |
 |---|---|---|---|

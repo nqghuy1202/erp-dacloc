@@ -94,7 +94,7 @@ export function Stat({ label, value, sub, tone }: { label: ReactNode; value: Rea
   );
 }
 
-/** Bảng tĩnh (server) cho màn chưa chuyển sang DataTable. Hàng 48px theo Ngoại lệ đã duyệt. */
+/** Bảng tĩnh (server). Hàng 48px theo Ngoại lệ đã duyệt. Cần ô tìm → dùng `SearchTable` (ui/search-rows.tsx). */
 export function Table({ head, children, className }: { head: ReactNode[]; children: ReactNode; className?: string }) {
   return (
     <div className={cn("overflow-x-auto", className)}>
@@ -107,20 +107,5 @@ export function Table({ head, children, className }: { head: ReactNode[]; childr
     </div>
   );
 }
-
-// nợ: Field/Input/Select/Textarea còn là phần tử native (form server action không kiểm soát giá trị); trần: chưa có ô lỗi/trạng thái kiểu Astryx, nâng cấp sang TextInput/Selector (htmlName) khi chuyển từng form ở giai đoạn 2.
-const FIELD = "min-h-10 w-full rounded-ctl border border-line-strong bg-surface px-3 text-fg placeholder:text-fg-2 hover:border-fg-2 focus-visible:border-accent disabled:opacity-60";
-export function Field({ label, children, hint, error }: { label: string; children: ReactNode; hint?: ReactNode; error?: string }) {
-  return (
-    <label className="flex flex-col gap-1.5">
-      <span className="text-[13px] font-semibold text-fg">{label}</span>
-      {children}
-      {error ? <span className="text-xs font-medium text-bad">{error}</span> : hint ? <span className="text-xs text-fg-2">{hint}</span> : null}
-    </label>
-  );
-}
-export const Input = ({ className, ...p }: ComponentProps<"input">) => <input {...p} className={cn(FIELD, className)} />;
-export const Select = ({ className, ...p }: ComponentProps<"select">) => <select {...p} className={cn(FIELD, "pr-8", className)} />;
-export const Textarea = ({ className, ...p }: ComponentProps<"textarea">) => <textarea {...p} className={cn(FIELD, "py-2", className)} />;
 
 export { Progress } from "./progress";

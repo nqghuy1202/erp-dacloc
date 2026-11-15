@@ -7,11 +7,14 @@
 |---|---|
 | providers.tsx | Gốc giao diện: `Theme` Astryx `dacloc` (mode từ cookie `theme`), i18n Astryx `vi-VN`/`en`, `LinkProvider` next/link; nghe sự kiện `dacloc:theme` |
 | theme-mode.tsx | Ngữ cảnh sáng/tối (`useThemeMode`, `useEffectiveDark`) — không import Astryx |
-| ui/index.tsx | Button, LinkButton, Card(+Header/Body), Badge, PageHeader, Empty, Stat (bọc Astryx, giữ API cũ); Table tĩnh; Field/Input/Select/Textarea (native, nợ chuyển TextInput/Selector) |
-| ui/client.tsx | Submit, Sheet (`<dialog>`), ThemeIconButton (Astryx) + re-export ActionForm/toast/Toaster |
+| ui/index.tsx | Button, LinkButton, Card(+Header/Body), Badge, PageHeader, Empty, Stat (bọc Astryx, giữ API cũ); Table tĩnh |
+| ui/client.tsx | Submit, ConfirmSubmit (AlertDialog), Sheet (Drawer), ThemeIconButton, ErrorState (Astryx) + re-export ActionForm/toast/Toaster |
+| ui/fields.tsx | Field, Input, Select, Textarea trên Astryx (TextInput/Selector/TextArea), giữ API native; import trực tiếp, KHÔNG qua index |
+| ui/options.ts | readOptions: `<option>/<optgroup>` → options của Selector (hàm thuần, có unit test) |
 | ui/form.tsx | ActionForm (useActionState + toast), Toaster/toast — không phụ thuộc Astryx |
 | ui/data-table.tsx | DataTable: Astryx Table + ô tìm không dấu + sắp xếp cột phía trình duyệt (cột/dòng truyền từ server) |
-| ui/search.ts · text.ts | fold/matchRows (tìm không dấu) · textOf (nhãn chữ từ children) — hàm thuần, có unit test |
+| ui/search.ts · text.ts | fold/matchRows/searchText (tìm không dấu) · textOf (nhãn chữ từ children) — hàm thuần, có unit test |
+| ui/search-rows.tsx | SearchTable: bảng tĩnh + ô tìm lọc dòng phía trình duyệt — import trực tiếp |
 | ui/progress.tsx | Progress có vạch mốc (theo token) |
 | ui/cn.ts | nối className |
 | brand.tsx | BrandLogo (logo Đắc Lộc), BrandWave (dải sóng màn đăng nhập) |

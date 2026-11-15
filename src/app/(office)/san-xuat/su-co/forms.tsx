@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
-import { ActionForm, Sheet, Submit } from "@/components/ui/client";
-import { Field, Textarea } from "@/components/ui";
+import { ActionForm, ConfirmSubmit, Sheet, Submit } from "@/components/ui/client";
+import { Field, Textarea } from "@/components/ui/fields";
 import { resolveAction } from "./actions";
 
 const OPTIONS = [["monitor", "Theo dõi thêm"], ["treat", "Xử lý nước / thuốc"], ["cull", "Huỷ lô"]] as const;
@@ -27,7 +27,10 @@ function ResolveForm({ incidentId, lotCode, estimated, close }: { incidentId: nu
       </fieldset>
       {cull ? <p role="alert" className="num rounded-ctl bg-bad-soft px-3 py-2 text-[13px] font-medium text-bad-ink">Huỷ lô {lotCode} — {nf.format(estimated)} con</p> : null}
       <Field label={cull ? "Lý do huỷ" : "Ghi chú"}><Textarea name="note" rows={3} maxLength={500} required={cull} /></Field>
-      <Submit variant={cull ? "danger" : "primary"} className="w-full">{cull ? "Huỷ lô" : "Đóng sự cố"}</Submit>
+      {cull
+        ? <ConfirmSubmit variant="danger" className="w-full" title={`Huỷ lô ${lotCode}`} actionLabel="Huỷ lô"
+            description={`Huỷ ${nf.format(estimated)} con của lô ${lotCode} và đóng sự cố. Không hoàn tác được.`}>Huỷ lô</ConfirmSubmit>
+        : <Submit className="w-full">Đóng sự cố</Submit>}
     </ActionForm>
   );
 }

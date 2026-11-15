@@ -3,7 +3,8 @@ import { db } from "@/lib/db/client";
 import { fmtDate } from "@/lib/i18n";
 import { getT, requireActor } from "@/lib/session";
 import { countList, warehousesInScope } from "@/server/queries-admin";
-import { Card, CardBody, Empty, PageHeader, Table } from "@/components/ui";
+import { Card, CardBody, Empty, PageHeader } from "@/components/ui";
+import { SearchTable } from "@/components/ui/search-rows";
 import { StatusBadge } from "@/components/status";
 import { StartCountSheet } from "./forms";
 import { startCountAction } from "./actions";
@@ -25,7 +26,7 @@ export default async function CountsPage() {
       <Card>
         <CardBody>
           {list.length ? (
-            <Table head={["Mã biên bản", "Kho", "Ngày mở", "Ngày duyệt", "Trạng thái"]}>
+            <SearchTable search="Tìm mã biên bản, kho" head={["Mã biên bản", "Kho", "Ngày mở", "Ngày duyệt", "Trạng thái"]}>
               {list.map(({ c, warehouse }) => (
                 <tr key={c.id}>
                   <td><Link href={`/kho/kiem-ke/${c.id}`} className="font-medium text-accent-ink underline-offset-2 hover:underline">{c.code}</Link></td>
@@ -35,7 +36,7 @@ export default async function CountsPage() {
                   <td><StatusBadge status={c.status} locale={locale} /></td>
                 </tr>
               ))}
-            </Table>
+            </SearchTable>
           ) : <Empty title="Chưa có đợt kiểm kê" />}
         </CardBody>
       </Card>

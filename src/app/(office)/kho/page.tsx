@@ -4,7 +4,8 @@ import { db } from "@/lib/db/client";
 import { fmtDate, fmtNum } from "@/lib/i18n";
 import { getT, requireActor } from "@/lib/session";
 import { stockList } from "@/server/inventory";
-import { Badge, Card, CardBody, Empty, LinkButton, PageHeader, Table } from "@/components/ui";
+import { Badge, Card, CardBody, Empty, LinkButton, PageHeader } from "@/components/ui";
+import { SearchTable } from "@/components/ui/search-rows";
 import { cn } from "@/components/ui/cn";
 
 export const metadata = { title: "Tồn kho" };
@@ -45,7 +46,7 @@ export default async function StockPage({ searchParams }: { searchParams: Promis
       <Card>
         <CardBody>
           {sorted.length ? (
-            <Table head={["Vật tư", "Kho", "Tồn", "Tối thiểu", "Hạn gần nhất", "Trạng thái"]}>
+            <SearchTable search="Tìm vật tư, kho" head={["Vật tư", "Kho", "Tồn", "Tối thiểu", "Hạn gần nhất", "Trạng thái"]}>
               {sorted.map((r) => (
                 <tr key={`${r.warehouseId}-${r.materialId}`} className={highlight.has(r.materialId) ? "bg-accent-soft" : undefined}>
                   <td><div className="font-medium">{r.material.name}</div><div className="text-xs text-fg-2">{r.material.code}</div></td>
@@ -61,7 +62,7 @@ export default async function StockPage({ searchParams }: { searchParams: Promis
                   </td>
                 </tr>
               ))}
-            </Table>
+            </SearchTable>
           ) : <Empty title="Chưa có vật tư" action={canReceive ? <LinkButton href="/kho/nhap">Thêm phiếu nhập đầu tiên</LinkButton> : undefined} />}
         </CardBody>
       </Card>

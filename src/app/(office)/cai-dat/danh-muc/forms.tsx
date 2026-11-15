@@ -2,7 +2,8 @@
 import { useActionState, useEffect } from "react";
 import { Download, Plus, Upload } from "lucide-react";
 import { ActionForm, Sheet, Submit, toast, type ActionState } from "@/components/ui/client";
-import { Badge, Field, Input, Select, Table, Textarea } from "@/components/ui";
+import { Badge, Table } from "@/components/ui";
+import { Field, Input, Select, Textarea } from "@/components/ui/fields";
 
 type Act = (prev: ActionState, f: FormData) => Promise<ActionState>;
 type ImportErr = { row: number; code?: string; reason: "duplicate_code" | "invalid_row" | "unknown_farm" };

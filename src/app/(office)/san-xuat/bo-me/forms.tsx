@@ -2,7 +2,7 @@
 import { useCallback, useRef } from "react";
 import { Plus } from "lucide-react";
 import { ActionForm, Sheet, Submit } from "@/components/ui/client";
-import { Field, Input, Select } from "@/components/ui";
+import { Field, Input, Select } from "@/components/ui/fields";
 import { receiveBroodstockAction } from "./actions";
 
 function Form({ close, farms, species }: { close: () => void; farms: { id: number; name: string }[]; species: { id: number; name: string }[] }) {

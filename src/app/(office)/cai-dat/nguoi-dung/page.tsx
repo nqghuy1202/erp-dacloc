@@ -2,7 +2,8 @@ import { db } from "@/lib/db/client";
 import { fmtDate } from "@/lib/i18n";
 import { getT, requireActor } from "@/lib/session";
 import { farmsInScope, usersWithFarms } from "@/server/queries-admin";
-import { Badge, Card, CardBody, Empty, PageHeader, Table } from "@/components/ui";
+import { Badge, Card, CardBody, Empty, PageHeader } from "@/components/ui";
+import { SearchTable } from "@/components/ui/search-rows";
 import { ROLE_LABEL } from "@/components/status";
 import { ActiveToggle, FarmsSheet, NewUserSheet } from "./forms";
 import { createUserAction, setActiveAction, setFarmsAction } from "./actions";
@@ -25,7 +26,7 @@ export default async function UsersPage() {
       <Card>
         <CardBody>
           {users.length > 1 ? (
-            <Table head={["Mã NV", "Họ tên", "Vai trò", "Trại", "Tạo ngày", "Trạng thái", ""]}>
+            <SearchTable search="Tìm mã NV, họ tên, vai trò" head={["Mã NV", "Họ tên", "Vai trò", "Trại", "Tạo ngày", "Trạng thái", ""]}>
               {users.map((u) => {
                 const all = u.role === "director" || u.role === "admin";
                 return (
@@ -47,7 +48,7 @@ export default async function UsersPage() {
                   </tr>
                 );
               })}
-            </Table>
+            </SearchTable>
           ) : <Empty title="Mới có bạn" />}
         </CardBody>
       </Card>
