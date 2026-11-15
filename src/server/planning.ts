@@ -136,17 +136,21 @@ export async function overview(db: DB, today = ymd(new Date())) {
 }
 
 // ───────── NV15 Việc hằng ngày
-/** Sinh việc theo lịch mẫu giai đoạn — idempotent (R12, AC-23) */
+/** Số dòng mỗi lệnh INSERT: 8 cột/dòng → ~4000 tham số, xa trần 65535 của Postgres */
+const TASK_INSERT_CHUNK = 500;
+
+/** Sinh việc theo lịch mẫu giai đoạn — idempotent (R12, AC-23).
+ *  Chèn gộp theo khối thay vì mỗi lô một lệnh: M1 gọi hàm này mỗi lần mở, 144 lô × ~220ms tới Supabase
+ *  làm phản hồi /hien-truong kéo ~68s (bug-fix-m1-stream 2026-11-15). */
 export async function generateDailyTasks(db: DB, day = ymd(new Date())) {
   const rows = await db.select({ lot: lots, stage: stages }).from(lots).innerJoin(stages, eq(stages.id, lots.stageId)).where(eq(lots.status, "rearing"));
+  const vals = rows.flatMap(({ lot, stage }) => [
+    ...stage.feedTimes.map((slot) => ({ kind: "feed", slot, title: "Cho ăn" })),
+    ...stage.waterTimes.map((slot) => ({ kind: "water", slot, title: "Đo nước" })),
+  ].map((t) => ({ ...t, lotId: lot.id, tankId: lot.tankId, day, source: "auto" })));
   let created = 0;
-  for (const { lot, stage } of rows) {
-    const vals = [
-      ...stage.feedTimes.map((slot) => ({ kind: "feed", slot, title: "Cho ăn" })),
-      ...stage.waterTimes.map((slot) => ({ kind: "water", slot, title: "Đo nước" })),
-    ].map((t) => ({ ...t, lotId: lot.id, tankId: lot.tankId, day, source: "auto" }));
-    if (!vals.length) continue;
-    const ins = await db.insert(tasks).values(vals).onConflictDoNothing().returning({ id: tasks.id });
+  for (let i = 0; i < vals.length; i += TASK_INSERT_CHUNK) {
+    const ins = await db.insert(tasks).values(vals.slice(i, i + TASK_INSERT_CHUNK)).onConflictDoNothing().returning({ id: tasks.id });
     created += ins.length;
   }
   return created;
