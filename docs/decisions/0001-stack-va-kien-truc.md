@@ -29,3 +29,4 @@ MVP sản xuất giống + kho (ba-spec 11, design-spec 12). User chốt: Supaba
 - Mọi bảng mới phải có `enable row level security` trong migration (kiểm bằng test `rls.test.ts`).
 - Session secret `AUTH_SECRET` và `DATABASE_URL` chỉ ở `.env.local` / biến môi trường Vercel.
 - Next.js phải ở bản đã vá: Vercel CHẶN deploy bản có lỗ hổng đã công bố ("Vulnerable version of Next.js detected"). 2026-11-15 nâng 15.1.6 → 15.5.29 (nhãn npm `backport`, dòng 15 còn được vá), kèm `eslint-config-next` 15.5.29 và `@playwright/test` 1.49.1 → 1.51.1 (peer của Next 15.5). Nâng tiếp: theo nhãn `backport` của npm cho tới khi chuyển Next 16 có chủ đích.
+- `vercel.json` khai `"framework": "nextjs"`: project Vercel từng đặt Framework Preset = "Other" nên build xong vẫn trả 404 NOT_FOUND (2026-11-15). Khai trong repo để không phụ thuộc cài đặt trên dashboard.
