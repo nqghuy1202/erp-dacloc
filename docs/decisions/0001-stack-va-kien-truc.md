@@ -12,7 +12,7 @@ MVP sản xuất giống + kho (ba-spec 11, design-spec 12). User chốt: Supaba
 | Vùng | Chọn | Lý do |
 |---|---|---|
 | Web | Next.js 15 App Router + React 19 + TypeScript strict | Server Components + Server Actions, chạy tốt trên Vercel |
-| UI | Tailwind 3 + component tối giản theo API shadcn trong `src/components/ui` | Ngoại lệ [STACK]: không chạy CLI shadcn/radix để giữ phụ thuộc ít; dùng `<dialog>` native. `// nợ: component tự viết tối giản, chuyển sang shadcn khi cần combobox/menu phức tạp` |
+| UI | ~~Tailwind 3 + component tối giản theo API shadcn~~ → thay bởi [ADR 0003](0003-design-system-astryx.md) (Astryx + Tailwind 4, 2026-11-15) | Ngoại lệ [STACK]: không chạy CLI shadcn/radix để giữ phụ thuộc ít; dùng `<dialog>` native. `// nợ: component tự viết tối giản, chuyển sang shadcn khi cần combobox/menu phức tạp` |
 | DB | Postgres của Supabase, truy cập qua Drizzle ORM + `postgres` (server-only) | Một nguồn schema có kiểu; migration bằng drizzle-kit |
 | Auth | Tự làm: mã NV + bcrypt, phiên là JWT ký HS256 (jose) trong cookie httpOnly | Supabase Auth bắt buộc email; user chọn mã NV |
 | Phân quyền | Kiểm ở server trong từng hàm nghiệp vụ (`requireUser`, `assertFarm`) theo role + trại (R1) | Truy cập DB chỉ từ server với role postgres |

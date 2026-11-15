@@ -6,6 +6,7 @@ import { getT, requireActor } from "@/lib/session";
 import { traceFinishedLot } from "@/server/production";
 import { qrSvg, traceUrl } from "@/server/queries-lab";
 import { Card, Empty, LinkButton, PageHeader } from "@/components/ui";
+import { BrandLogo } from "@/components/brand";
 import { PrintButton } from "./print-button";
 
 export const metadata = { title: "Tem QR" };
@@ -38,6 +39,7 @@ export default async function LabelPage({ params }: { params: Promise<{ token: s
       <PageHeader title="Tem QR" crumb={<Link href={`/truy-xuat/${encodeURIComponent(fl.qrToken)}`} className="hover:underline">{fl.code}</Link>} actions={<PrintButton />} />
       {/* Tem luôn nền trắng chữ đen (giấy in), không theo theme tối */}
       <div id="tem-qr" className="num mx-auto flex w-full max-w-sm flex-col items-center gap-3 rounded-card border border-line bg-white p-6 text-center text-black">
+        <div className="flex items-center gap-2 self-start text-left"><BrandLogo className="h-12 w-auto" /><div className="text-[13px] font-semibold leading-tight">Thủy sản Đắc Lộc<div className="font-normal">Giống thủy sản công nghệ cao</div></div></div>
         <div role="img" aria-label={`Mã QR lô ${fl.code}`} className="aspect-square w-full max-w-[280px] [&_svg]:h-full [&_svg]:w-full" dangerouslySetInnerHTML={{ __html: svg }} />
         <div className="text-[22px] font-semibold">{fl.code}</div>
         <div className="text-[15px]">{fmtNum(locale, fl.qty)} PL · {fl.stageCode}</div>

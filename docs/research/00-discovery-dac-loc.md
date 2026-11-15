@@ -1,7 +1,7 @@
 ---
 title: Discovery — ERP Khu SX giống thủy sản CNC Đắc Lộc
 status: draft (chờ trả lời câu hỏi B0)
-last_verified: 2026-11-07
+last_verified: 2026-11-13
 ttl_days: 30
 ---
 
@@ -17,6 +17,10 @@ ttl_days: 30
 | Kinh doanh khác | Thức ăn, khoáng, men vi sinh, thuốc thú y (>3.000 tấn/năm); thu mua >10.000 tấn tôm nguyên liệu; vận tải lạnh; khách sạn | vsta |
 | Nhân sự | ~500+ người, có nhà ở tập thể | thuysanvietnam |
 | Chứng nhận | DN NN ứng dụng CNC (2016), Bông lúa vàng 2015 | baophuyen.vn |
+| Tổ chức (họp) | Trụ sở chính 35 Nguyễn Đình Chiểu; chi nhánh tại khu sản xuất đa phần là kỹ thuật; "3 khu văn phòng, sản xuất" (chưa rõ) | họp, xem [02](02-hop-dac-loc-2026-11.md) |
+| Quy mô SX (họp) | 50 ha: tôm giống, cá giống, **ốc giống**, nuôi tôm thương phẩm, tôm hùm | họp |
+| Kinh doanh (họp) | Cửa hàng thức ăn…, trạm thu mua ở Phú Lạc, vận tải | họp |
+| Công cụ hiện tại (họp) | Excel; kế toán **Vietsun**; GlobalGAP từ 2013 | họp |
 
 # 2. Chuỗi nghiệp vụ suy luận (CẦN XÁC NHẬN)
 
@@ -55,12 +59,12 @@ Nghiệp vụ hỗ trợ: kho (thức ăn tảo/artemia/hoá chất/thuốc), qu
 | Chủ đề | Quyết định |
 |---|---|
 | Phạm vi | Đủ 4 mảng: Sản xuất giống · Bán hàng & công nợ · Kho & mua hàng · Nhân sự & kế toán |
-| Loài | Tôm thẻ chân trắng, cá chẽm, tôm hùm, nuôi thương phẩm/thu mua |
+| Loài | Tôm thẻ chân trắng, cá chẽm, tôm hùm, nuôi thương phẩm/thu mua — ⚠️ họp thêm ốc giống (§6) |
 | Người dùng | Công nhân tại bể · Trưởng trại/kỹ thuật · Sale/kế toán/kho · BGĐ · Đại lý & hộ nuôi (cổng khách hàng) |
 | Hiện trạng | Excel/sổ tay → cần import dữ liệu ban đầu; không có SOP nội bộ → dùng quy trình chuẩn ngành làm giả định |
 | Nền tảng | Web (văn phòng) + PWA mobile offline (công nhân) |
-| IoT | Nhập tay giai đoạn 1, để sẵn cổng tích hợp cảm biến |
-| Kế toán | Đầy đủ trong ERP (sổ cái, BCTC, hoá đơn điện tử) |
+| IoT | Nhập tay giai đoạn 1, để sẵn cổng tích hợp cảm biến — ⚠️ họp nêu nhu cầu tự động hoá, chờ xác nhận (§6) |
+| Kế toán | Đầy đủ trong ERP (sổ cái, BCTC, hoá đơn điện tử) — ⚠️ xem lại sau họp: đang dùng Vietsun (§6) |
 | Truy xuất | QR theo lô in trên bao giống |
 | Ngôn ngữ | Việt + Anh |
 | MVP | Sản xuất + kho trước → bán hàng/cổng KH → kế toán/nhân sự |
@@ -68,6 +72,14 @@ Nghiệp vụ hỗ trợ: kho (thức ăn tảo/artemia/hoá chất/thuốc), qu
 | Giao diện | Kết hợp: dashboard sinh động (kiểu Gummi) + màn nghiệp vụ dạng bảng gọn (kiểu VANTUS) |
 | Phân quyền | Theo trại + vai trò |
 | Cảnh báo | Thông báo trong app |
+
+# 6. Cập nhật sau họp (2026-11)
+Chi tiết, đối chiếu và 10 câu hỏi: [02-hop-dac-loc-2026-11.md](02-hop-dac-loc-2026-11.md).
+- **Ưu tiên số 1 của Đắc Lộc: an toàn dịch bệnh / an toàn sinh học**, trước quản trị.
+- **Kế toán**: dùng Vietsun → quyết định "đầy đủ trong ERP" ở §5 chưa chắc còn đúng; mặc định tạm: ERP xuất dữ liệu sang Vietsun.
+- **Loài**: thêm ốc giống; "cá giống" chưa rõ loài.
+- **Tự động hoá/quan trắc** và **thiết bị bền trong môi trường mặn** được nhấn mạnh.
+- Tần suất ghi: độ mặn + thay nước hằng tuần, thông tin khác hằng ngày.
 
 ## Assumptions
 - Quy trình sản xuất dùng chuẩn ngành (§2) cho tới khi có SOP thực tế.

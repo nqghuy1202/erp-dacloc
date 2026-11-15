@@ -18,6 +18,5 @@ export function StatusBadge({ status, locale = "vi" }: { status: string; locale?
   return <Badge tone={m[2]}>{locale === "en" ? m[1] : m[0]}</Badge>;
 }
 
-export const ROLE_LABEL: Record<string, string> = {
-  worker: "Công nhân", farm_lead: "Trưởng trại", lab: "Kỹ thuật lab", storekeeper: "Thủ kho", director: "Ban giám đốc", admin: "Quản trị",
-};
+// Tách ra roles.ts để màn hiện trường dùng nhãn vai trò mà không kéo Badge Astryx.
+export { ROLE_LABEL } from "./roles";

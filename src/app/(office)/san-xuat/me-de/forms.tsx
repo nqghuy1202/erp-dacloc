@@ -1,8 +1,8 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ActionForm, Sheet, Submit } from "@/components/ui/client";
-import { Field, Input, Select, Textarea } from "@/components/ui";
+import { ActionForm, Sheet, Submit, ConfirmSubmit } from "@/components/ui/client";
+import { Field, Input, Select, Textarea } from "@/components/ui/fields";
 import { cancelBatchAction, openLotAction } from "./actions";
 
 type TankOpt = { id: number; code: string; farmId: number; farmName: string };
@@ -70,7 +70,7 @@ export function OpenLotSheet(p: { batchId: number; batchCode: string; remaining:
   );
 }
 
-function CancelForm({ batchId, close }: { batchId: number; close: () => void }) {
+function CancelForm({ batchId, batchCode, remaining, close }: { batchId: number; batchCode: string; remaining: number; close: () => void }) {
   const ref = useRef(close);
   ref.current = close;
   const done = useCallback(() => ref.current(), []);
@@ -78,7 +78,8 @@ function CancelForm({ batchId, close }: { batchId: number; close: () => void }) 
     <ActionForm action={cancelBatchAction} onDone={done} className="flex flex-col gap-4">
       <input type="hidden" name="batchId" value={batchId} />
       <Field label="Lý do huỷ"><Textarea name="reason" required maxLength={300} rows={3} /></Field>
-      <Submit variant="danger" className="w-full">Huỷ mẻ</Submit>
+      <ConfirmSubmit variant="danger" className="w-full" title={`Huỷ mẻ ${batchCode}`} actionLabel="Huỷ mẻ"
+        description={`Bỏ ${nf.format(remaining)} Nauplius còn lại của mẻ ${batchCode}. Không hoàn tác được.`}>Huỷ mẻ</ConfirmSubmit>
     </ActionForm>
   );
 }
@@ -86,7 +87,7 @@ function CancelForm({ batchId, close }: { batchId: number; close: () => void }) 
 export function CancelBatchSheet({ batchId, batchCode, remaining }: { batchId: number; batchCode: string; remaining: number }) {
   return (
     <Sheet title={`Huỷ mẻ ${batchCode} — còn ${nf.format(remaining)} Nauplius`} variant="secondary" trigger="Huỷ" triggerClass="border-transparent text-bad">
-      {(close) => <CancelForm batchId={batchId} close={close} />}
+      {(close) => <CancelForm batchId={batchId} batchCode={batchCode} remaining={remaining} close={close} />}
     </Sheet>
   );
 }

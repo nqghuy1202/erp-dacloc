@@ -2,7 +2,7 @@
 
 > Load khi: đổi vai trò, phạm vi trại, cổng truy cập màn.
 covers: src/server/access.ts, src/lib/session.ts, src/components/shell/nav.ts
-last_verified: 2026-11-07
+last_verified: 2026-11-15
 ttl_days: 90
 
 Đăng nhập mã NV + mật khẩu (bcrypt), phiên JWT 12h cookie httpOnly. Sai 5 lần → khoá 5 phút (theo mã NV, bộ nhớ tiến trình — `// nợ: khoá chỉ trong 1 tiến trình, chuyển sang bảng DB khi chạy nhiều instance`).
@@ -17,3 +17,4 @@ ttl_days: 90
 | admin | / | mọi trại | danh mục, người dùng; qua mọi assertRole |
 
 Cổng: `requireActor(roles)` ở page (sai vai trò → về trang chính); `assertRole/assertFarm` trong service (chặn thật, kể cả gọi action trực tiếp). Test: AC-8 (integration + e2e).
+<!-- re-verified: 2026-11-15 20:00 - session.ts chỉ thêm getThemeMode (cookie theme, không liên quan quyền); nav.ts không đổi; requireActor/canFarm không đổi -->

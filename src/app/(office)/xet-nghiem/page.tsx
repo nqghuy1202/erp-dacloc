@@ -4,7 +4,8 @@ import { db } from "@/lib/db/client";
 import { fmtDate, fmtTime } from "@/lib/i18n";
 import { getT, requireActor } from "@/lib/session";
 import { labQueue } from "@/server/queries-lab";
-import { Badge, Card, CardBody, Empty, LinkButton, PageHeader, Table } from "@/components/ui";
+import { Badge, Card, CardBody, Empty, LinkButton, PageHeader } from "@/components/ui";
+import { SearchTable } from "@/components/ui/search-rows";
 import { StatusBadge } from "@/components/status";
 import { cn } from "@/components/ui/cn";
 
@@ -57,7 +58,7 @@ export default async function LabQueuePage({ searchParams }: { searchParams: Pro
       <Card>
         <CardBody>
           {list.length ? (
-            <Table head={["Mã phiếu", "Đối tượng", "Loại", "Lab", "Ngày mẫu", tab === "pending" ? "Hạn" : "Ngày chốt", "Trạng thái", ""]}>
+            <SearchTable search="Tìm mã phiếu, đối tượng, lab" head={["Mã phiếu", "Đối tượng", "Loại", "Lab", "Ngày mẫu", tab === "pending" ? "Hạn" : "Ngày chốt", "Trạng thái", ""]}>
               {list.map(({ t, lotId, lotCode, broodCode, farmName }) => {
                 const due = dueText(t.dueAt, now);
                 const subject = lotCode
@@ -89,7 +90,7 @@ export default async function LabQueuePage({ searchParams }: { searchParams: Pro
                   </tr>
                 );
               })}
-            </Table>
+            </SearchTable>
           ) : <Empty title={tab === "pending" ? "Không có mẫu chờ" : "Chưa có phiếu đã chốt"} />}
           {page > 1 || more ? (
             <div className="mt-4 flex items-center justify-end gap-2 text-[13px]">

@@ -4,7 +4,8 @@ import { db } from "@/lib/db/client";
 import { fmtDate, fmtNum } from "@/lib/i18n";
 import { getT, requireActor } from "@/lib/session";
 import { BROOD_PAGE, broodstockList, speciesList, visibleFarms } from "@/server/queries-production";
-import { Badge, Card, Empty, PageHeader, Table } from "@/components/ui";
+import { Badge, Card, Empty, PageHeader } from "@/components/ui";
+import { SearchTable } from "@/components/ui/search-rows";
 import { StatusBadge } from "@/components/status";
 import { ReceiveSheet } from "./forms";
 
@@ -34,7 +35,7 @@ export default async function BroodstockPage({ searchParams }: { searchParams: P
       <Card>
         {rows.length ? (
           <>
-            <Table head={["Mã đàn", "Trại", "Nguồn", <span key="m" className="block text-right">Đực / cái</span>, "Trạng thái", "Ngày nhận", "Kết quả đầu vào"]}>
+            <SearchTable search="Tìm mã đàn, trại, nguồn" head={["Mã đàn", "Trại", "Nguồn", <span key="m" className="block text-right">Đực / cái</span>, "Trạng thái", "Ngày nhận", "Kết quả đầu vào"]}>
               {rows.map(({ b, farmName, speciesName, test }) => {
                 const pos = test?.results.filter((r) => r.positive).map((r) => r.indicator) ?? [];
                 const overdue = test?.status === "pending" && test.dueAt.getTime() < now;
@@ -58,7 +59,7 @@ export default async function BroodstockPage({ searchParams }: { searchParams: P
                   </tr>
                 );
               })}
-            </Table>
+            </SearchTable>
             {pages > 1 ? (
               <nav aria-label="Phân trang" className="num flex items-center justify-end gap-2 border-t border-line p-3 text-[13px]">
                 <span className="text-fg-2">Trang {page}/{pages}</span>

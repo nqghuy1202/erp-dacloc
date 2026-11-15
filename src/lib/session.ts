@@ -35,6 +35,13 @@ export async function getLocale(): Promise<Locale> {
   return v === "en" ? "en" : "vi";
 }
 
+export type ThemeMode = "light" | "dark" | "system";
+/** Chế độ sáng/tối người dùng đã chọn (cookie `theme`) — đọc ở server để render đúng ngay lần đầu, không nháy màu. */
+export async function getThemeMode(): Promise<ThemeMode> {
+  const v = (await cookies()).get("theme")?.value;
+  return v === "light" || v === "dark" ? v : "system";
+}
+
 export async function getT() {
   const locale = await getLocale();
   return { locale, t: translator(locale) };

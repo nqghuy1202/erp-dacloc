@@ -3,6 +3,7 @@ import { alertShort, dayDiff, lotProgress } from "@/server/queries-production";
 import { parseCsv } from "@/server/catalog";
 import { addDays, makeCode, ymd } from "@/server/util";
 import { fmtCompact, translator } from "@/lib/i18n";
+import { initials } from "@/components/shell/initials";
 
 describe("tiện ích thuần", () => {
   it("dayDiff / addDays", () => {
@@ -30,5 +31,16 @@ describe("tiện ích thuần", () => {
     expect(translator("en")("ov.title")).toBe("Hatchery overview");
     expect(fmtCompact("vi", 3_500_000)).toBe("3,5 tr");
     expect(fmtCompact("en", 3_500_000)).toBe("3.5 M");
+  });
+  it("header: initials lấy từ đầu + từ cuối, chịu tên rỗng / dài / có dấu", () => {
+    expect(initials("Nguyễn Văn An")).toBe("NA");
+    expect(initials("  đặng  ")).toBe("Đ");
+    expect(initials("")).toBe("?");
+    expect(initials("Trần Thị Bích Ngọc Hương Giang Lan Anh Thư")).toBe("TT");
+  });
+  it("header: nhãn chuông đủ cả vi/en", () => {
+    expect(translator("vi")("top.notifications", { n: 3 })).toBe("3 thông báo chưa đọc");
+    expect(translator("en")("top.notifications", { n: 3 })).toBe("3 unread notifications");
+    expect(translator("en")("top.toDark")).toBe("Switch to dark theme");
   });
 });

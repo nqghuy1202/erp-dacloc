@@ -2,10 +2,12 @@
 
 > Load khi: thêm/sửa form, Sheet, xác nhận.
 covers: src/components/ui/client.tsx, src/app
-last_verified: 2026-11-07
+last_verified: 2026-11-15
 ttl_days: 90
 
-Cơ chế: `Sheet` (`<dialog>` bên phải, toàn màn trên mobile) + `ActionForm` (lỗi hiện tại chỗ, toast khi xong). Xác nhận không đảo được dùng `<dialog>` riêng nêu hậu quả.
+Menu tài khoản (header, `shell/account-menu.tsx`): popover không modal, chứa form đổi ngôn ngữ (`setLocale`) và đăng xuất (`logout`); đóng bằng Esc, bấm ngoài, rời focus. Ngăn menu mobile do Astryx `AppShell` dựng (dialog modal, bẫy focus, Esc đóng, trả focus về nút).
+
+Cơ chế: `Sheet` (Astryx `Drawer` bên phải 520px, toàn màn trên mobile, bấm ra ngoài không đóng — giữ dữ liệu đang nhập) + `ActionForm` (`ui/form.tsx`; lỗi hiện tại chỗ, toast khi xong). Ô nhập `Field/Input/Select/Textarea` từ `ui/fields.tsx` (Astryx). Nút gửi: `Submit` (Astryx, văn phòng) / `FieldSubmit` (nhẹ, hiện trường + đăng nhập). Hành động không đảo được: `ConfirmSubmit` → AlertDialog nêu hậu quả (chốt/huỷ phiếu xét nghiệm, huỷ lô, huỷ mẻ, thu hoạch, chốt phiếu nhập, từ chối yêu cầu); huỷ phiếu xét nghiệm nay mở trong Sheet có ô lý do. 
 
 | Form | Ở màn | Service | AC |
 |---|---|---|---|
@@ -24,3 +26,6 @@ Cơ chế: `Sheet` (`<dialog>` bên phải, toàn màn trên mobile) + `ActionFo
 | Thêm người dùng · Sửa trại · Khoá | S16 | createUser · setUserFarms · setUserActive | — |
 | Ghi nhật ký (offline) | M2 | outbox → /api/logs/sync | AC-6..9 |
 | Xác nhận cảnh báo | M4, /thong-bao | ackAlert | AC-10 |
+
+<!-- re-verified: 2026-11-13 15:55 - đổi theme Đắc Lộc chỉ chạm màu/logo/icon; route, điều hướng, form, flow, nghiệp vụ không đổi -->
+<!-- re-verified: 2026-11-15 20:00 - form/Sheet chỉ đổi nút sang Astryx và tách ActionForm ra ui/form.tsx; trường, hành vi lỗi/toast, xác nhận không đổi -->

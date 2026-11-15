@@ -2,7 +2,8 @@ import { db } from "@/lib/db/client";
 import { fmtDate, fmtNum } from "@/lib/i18n";
 import { getT, requireActor } from "@/lib/session";
 import { materialsAll, recentReceipts } from "@/server/queries-admin";
-import { Card, CardBody, CardHeader, Empty, PageHeader, Table } from "@/components/ui";
+import { Card, CardBody, CardHeader, Empty, PageHeader } from "@/components/ui";
+import { SearchTable } from "@/components/ui/search-rows";
 import { StatusBadge } from "@/components/status";
 import { ReceiptForm } from "./form";
 import { saveReceipt } from "./actions";
@@ -36,7 +37,7 @@ export default async function ReceiptsPage() {
         <CardHeader title="Phiếu gần đây" right={<span>{recent.length} phiếu</span>} />
         <CardBody>
           {recent.length ? (
-            <Table head={["Mã phiếu", "Ngày", "Nhà cung cấp", "Chứng từ", "Kho", "Số dòng", "Tổng tiền", "Trạng thái"]}>
+            <SearchTable search="Tìm mã phiếu, nhà cung cấp, chứng từ" head={["Mã phiếu", "Ngày", "Nhà cung cấp", "Chứng từ", "Kho", "Số dòng", "Tổng tiền", "Trạng thái"]}>
               {recent.map(({ r, warehouse, lines, total }) => (
                 <tr key={r.id}>
                   <td className="font-medium">{r.code}</td>
@@ -49,7 +50,7 @@ export default async function ReceiptsPage() {
                   <td><StatusBadge status={r.status} locale={locale} /></td>
                 </tr>
               ))}
-            </Table>
+            </SearchTable>
           ) : <Empty title="Chưa có phiếu nhập" />}
         </CardBody>
       </Card>

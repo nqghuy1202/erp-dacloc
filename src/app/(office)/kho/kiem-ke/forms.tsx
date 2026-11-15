@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ClipboardList } from "lucide-react";
 import { ActionForm, Sheet, Submit, type ActionState } from "@/components/ui/client";
-import { Field, Input, Select } from "@/components/ui";
+import { Field, Input, Select } from "@/components/ui/fields";
 import { cn } from "@/components/ui/cn";
 import { fmtNum, type Locale } from "@/lib/i18n";
 import { TOLERANCE, diffRatio } from "./diff";

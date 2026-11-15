@@ -69,7 +69,7 @@ export default async function NotificationsPage() {
               <ul className="flex flex-col">
                 {notes.map(({ n, lotId, severity }) => (
                   <li key={n.id} className="flex min-h-12 items-start gap-3 border-t border-line py-3 first:border-t-0 first:pt-0">
-                    <span className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full", !n.readAt ? (severity === "bad" ? "bg-bad" : "bg-accent") : "bg-transparent")} aria-hidden />
+                    <span className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full", !n.readAt ? (severity === "bad" ? "bg-bad-fill" : "bg-accent") : "bg-transparent")} aria-hidden />
                     <div className="min-w-0 flex-1">
                       {lotId
                         ? <Link href={`/san-xuat/lo/${lotId}`} className={cn("hover:underline", !n.readAt ? "font-semibold" : "text-fg-2")}>{n.title}</Link>

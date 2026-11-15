@@ -1,0 +1,67 @@
+{
+  "name": "dacloc",
+  "like": "neutral",
+  "mode": "both",
+  "settings": [
+    {
+      "thing": "accent",
+      "value": "#108040",
+      "source": "dial"
+    },
+    {
+      "thing": "success",
+      "value": "#0f766e",
+      "source": "dial"
+    },
+    {
+      "thing": "danger",
+      "value": "#dc2626",
+      "source": "dial"
+    },
+    {
+      "thing": "info",
+      "value": "#2563eb",
+      "source": "dial"
+    },
+    {
+      "thing": "neutral",
+      "value": "#64748b",
+      "source": "dial"
+    },
+    {
+      "thing": "font",
+      "value": "system",
+      "source": "dial"
+    },
+    {
+      "thing": "warning",
+      "value": "#b45309",
+      "source": "dial"
+    },
+    {
+      "thing": "corners",
+      "value": "small",
+      "source": "dial"
+    },
+    {
+      "thing": "corners",
+      "value": "large",
+      "source": "dial",
+      "on": "containers"
+    },
+    {
+      "thing": "--color-background-body",
+      "value": "#f1f5f9",
+      "source": "token",
+      "mode": "light"
+    },
+    {
+      "thing": "--color-background-body",
+      "value": "#0b1120",
+      "source": "token",
+      "mode": "dark"
+    }
+  ],
+  "lifted": [],
+  "palette": "2ad9cd91a71915fa41cf393e0c87591f58f9d61559b5def85d0c10d876e4f1a1"
+}

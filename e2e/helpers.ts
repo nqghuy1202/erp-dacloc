@@ -8,5 +8,6 @@ export async function login(page: Page, empCode: string) {
   await page.locator("#empCode").fill(empCode);
   await page.locator("#password").fill(PASSWORD);
   await page.getByRole("button", { name: /Đăng nhập|Sign in/ }).click();
-  await expect(page).not.toHaveURL(/dang-nhap/);
+  // DB cloud (Supabase) có thể chậm ở lần đăng nhập đầu sau khi khởi động
+  await expect(page).not.toHaveURL(/dang-nhap/, { timeout: 20_000 });
 }

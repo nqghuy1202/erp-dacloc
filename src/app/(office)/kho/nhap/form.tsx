@@ -2,8 +2,9 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Trash2 } from "lucide-react";
-import { ActionForm, Submit, type ActionState } from "@/components/ui/client";
-import { Button, Field, Input, Select } from "@/components/ui";
+import { ActionForm, type ActionState, ConfirmSubmit } from "@/components/ui/client";
+import { Button } from "@/components/ui";
+import { Field, Input, Select } from "@/components/ui/fields";
 import { fmtNum, type Locale } from "@/lib/i18n";
 
 type Mat = { id: number; name: string; code: string; unit: string; banned: boolean };
@@ -84,7 +85,8 @@ export function ReceiptForm({ action, materials, locale }: { action: Act; materi
           <div className="text-[13px] text-fg-2">Tổng tiền · {payload.length} dòng</div>
           <div className="num text-[22px] font-semibold">{fmtNum(locale, total)} đ</div>
         </div>
-        <Submit className="ml-auto" disabled={!payload.length}>Chốt phiếu nhập</Submit>
+        <ConfirmSubmit className="ml-auto" disabled={!payload.length} title="Chốt phiếu nhập" actionLabel="Chốt phiếu"
+          description={`Cộng ${payload.length} dòng vật tư vào tồn kho, tổng ${fmtNum(locale, total)} đ. Phiếu đã chốt không sửa được.`}>Chốt phiếu nhập</ConfirmSubmit>
       </div>
     </ActionForm>
   );

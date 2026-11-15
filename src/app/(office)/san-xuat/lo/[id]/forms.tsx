@@ -1,8 +1,8 @@
 "use client";
 import { useCallback, useRef } from "react";
 import { ListPlus, PackageCheck } from "lucide-react";
-import { ActionForm, Sheet, Submit } from "@/components/ui/client";
-import { Field, Input } from "@/components/ui";
+import { ActionForm, Sheet, Submit, ConfirmSubmit } from "@/components/ui/client";
+import { Field, Input } from "@/components/ui/fields";
 import { addTaskAction, harvestAction } from "./actions";
 
 /** onDone ổn định: ActionForm chạy lại effect khi onDone đổi tham chiếu → tránh toast lặp */
@@ -45,7 +45,8 @@ export function HarvestSheet({ lotId, lotCode, tankCode, estimated, summary }: {
           <Field label="Số đếm thực (con)" hint={`Bể ${tankCode} chuyển sang Chờ vệ sinh`}>
             <Input type="number" name="countedQty" inputMode="numeric" min={1} step={1} defaultValue={estimated} required className="num text-right" />
           </Field>
-          <Submit className="w-full">Thu hoạch</Submit>
+          <ConfirmSubmit className="w-full" title={`Thu hoạch ${lotCode}`} actionLabel="Thu hoạch"
+            description={`Đóng lô ${lotCode}, ghi số đếm thực, bể ${tankCode} chuyển sang Chờ vệ sinh, tạo lô thành phẩm có mã QR. Không hoàn tác được.`}>Thu hoạch</ConfirmSubmit>
         </ActionForm>
       )}
     </Sheet>

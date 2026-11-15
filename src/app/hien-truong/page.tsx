@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { Check, ChevronRight } from "lucide-react";
+import { ArrowRight, Check, ChevronRight, ClipboardList } from "lucide-react";
 import { db } from "@/lib/db/client";
 import { getT, requireActor } from "@/lib/session";
 import { generateDailyTasks, tasksForUser } from "@/server/planning";
 import { ymd } from "@/server/util";
 import { FieldTop } from "@/components/field/top";
-import { Progress } from "@/components/ui";
+import { Progress } from "@/components/ui/progress";
+import { FieldBadge, FieldEmpty, FieldLinkButton } from "@/components/field/ui";
 import { cn } from "@/components/ui/cn";
 
 export const dynamic = "force-dynamic";
@@ -26,19 +27,22 @@ export default async function TodayPage() {
   const later = pending.filter((r) => toMin(r.task.slot) > nowMin + 30);
   const pct = rows.length ? (done.length / rows.length) * 100 : 0;
 
+  const href = (r: (typeof rows)[number]) => `/hien-truong/be/${r.task.tankId}?task=${r.task.id}&loai=${r.task.kind === "water" ? "nuoc" : "an"}`;
+  const next = now[0] ?? later[0]; // Primary M1: "Ghi việc kế tiếp" (design-spec 12 Screen map)
+
   const Item = ({ r, faded }: { r: (typeof rows)[number]; faded?: boolean }) => {
     const late = r.task.status === "pending" ? nowMin - toMin(r.task.slot) : 0;
     return (
-      <Link href={`/hien-truong/be/${r.task.tankId}?task=${r.task.id}&loai=${r.task.kind === "water" ? "nuoc" : r.task.kind === "feed" ? "an" : "an"}`}
-        className={cn("grid min-h-[72px] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-[14px] border bg-surface px-4 py-3",
+      <Link href={href(r)}
+        className={cn("grid min-h-[72px] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-card border bg-surface px-4 py-3 shadow-sm active:bg-surface-2",
           late > 60 ? "border-2 border-bad" : "border-line", faded && "opacity-60")}>
         <span className="num font-mono text-sm font-semibold">{r.task.slot}</span>
         <span className="min-w-0">
           <span className="block font-mono text-lg font-bold">{r.tankCode}</span>
           <span className="block text-[13px] text-fg-2">{r.task.title}</span>
           <span className="mt-1 flex flex-wrap gap-1.5">
-            {r.task.source === "manual" ? <span className="rounded-full bg-accent-soft px-2 py-0.5 text-xs font-medium text-accent-ink">Trưởng trại giao</span> : null}
-            {late > 60 ? <span className="rounded-full bg-bad-soft px-2 py-0.5 text-xs font-semibold text-bad-ink">Trễ {late} phút</span> : null}
+            {r.task.source === "manual" ? <FieldBadge tone="acc">Trưởng trại giao</FieldBadge> : null}
+            {late > 60 ? <FieldBadge tone="bad">Trễ {late} phút</FieldBadge> : null}
           </span>
         </span>
         {faded ? <Check className="text-ok" aria-label="Xong" /> : <ChevronRight className="text-fg-2" aria-hidden />}
@@ -55,7 +59,7 @@ export default async function TodayPage() {
       </section>
       <div className="flex flex-col gap-2 p-4">
         {!rows.length ? (
-          <div className="py-16 text-center text-fg-2">Chưa được giao bể · liên hệ trưởng trại</div>
+          <FieldEmpty title="Chưa được giao bể · liên hệ trưởng trại" icon={<ClipboardList size={32} aria-hidden />} />
         ) : null}
         {now.length ? <h2 className="pt-1 text-xs font-semibold uppercase tracking-wide text-fg-2">Bây giờ</h2> : null}
         {now.map((r) => <Item key={r.task.id} r={r} />)}
@@ -68,6 +72,11 @@ export default async function TodayPage() {
           </details>
         ) : null}
       </div>
+      {next ? (
+        <div className="sticky z-20 border-t border-line bg-surface/95 px-4 py-3 backdrop-blur" style={{ bottom: "calc(56px + env(safe-area-inset-bottom))" }}>
+          <FieldLinkButton href={href(next)}>Ghi việc kế tiếp · {next.tankCode}<ArrowRight size={20} aria-hidden /></FieldLinkButton>
+        </div>
+      ) : null}
     </>
   );
 }
