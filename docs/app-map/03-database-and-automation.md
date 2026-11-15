@@ -2,7 +2,7 @@
 
 > Load khi: đổi schema, migration, RLS, cron/việc nền.
 covers: src/lib/db, drizzle, scripts/migrate.mjs, scripts/seed.ts, src/app/api/cron
-last_verified: 2026-11-07
+last_verified: 2026-11-15
 ttl_days: 90
 
 Nguồn schema: `src/lib/db/schema.ts` → `npm run db:generate` → `drizzle/NNNN_*.sql` → `npm run db:migrate`.
@@ -21,8 +21,10 @@ Nguồn schema: `src/lib/db/schema.ts` → `npm run db:generate` → `drizzle/NN
 **Việc nền** (idempotent, gọi lặp an toàn):
 | Việc | Gọi bởi | Hàm |
 |---|---|---|
-| Sinh việc hằng ngày | Vercel Cron 00:00 VN (`vercel.json` 17:00 UTC) + mở `/hien-truong` | `generateDailyTasks` |
+| Sinh việc hằng ngày | Vercel Cron 00:00 VN (`vercel.json` 17:00 UTC) + mở `/hien-truong` | `generateDailyTasks` — chèn gộp khối 500 dòng, số lệnh INSERT không tăng theo số lô (M1 gọi mỗi lần mở; mỗi lô một lệnh từng làm M1 trả ~68s với 144 lô, bug-fix-m1-stream 2026-11-15) |
 | Leo thang cảnh báo > 2h | Vercel Cron + mở `/` | `runEscalation` |
 
 ## History
 - v1 (2026-11-07): schema MVP 30 bảng, RLS.
+- 2026-11-15: `generateDailyTasks` chèn gộp thay vì mỗi lô một lệnh (sửa M1 /hien-truong trả chậm ~68s).
+<!-- re-verified: 2026-11-15 21:00 - cron /api/cron/daily: CRON_SECRET Bearer, gọi generateDailyTasks + runEscalation, vercel.json 0 17 * * *; runEscalation lười ở (office)/page.tsx; 30 bảng + 30 RLS; index lots_one_rearing_per_tank, alerts_dedupe, stock_tx_ref, tasks_auto_unique có trong 0000_init.sql -->

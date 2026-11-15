@@ -8,7 +8,7 @@ const shot = (page: Page, name: string, fullPage = true) => page.screenshot({ pa
 
 async function setTheme(page: Page, mode: "light" | "dark") {
   await page.context().addCookies([{ name: "theme", value: mode, domain: new URL(page.url()).hostname, path: "/" }]);
-  await page.goto(page.url(), { waitUntil: "commit" });
+  await page.goto(page.url(), { waitUntil: "domcontentloaded" });
   await expect(page.locator("html")).toHaveAttribute("data-theme", mode);
 }
 
@@ -66,11 +66,9 @@ test.describe("M1", () => {
 // service worker PWA giữ điều hướng /hien-truong khi tải lại trong test → chặn để đo giao diện
 test.use({ serviceWorkers: "block" });
 test("M1 hôm nay (mobile): nút 'Ghi việc kế tiếp' ở vùng ngón cái", async ({ page }) => {
-  test.setTimeout(180_000);
   await page.setViewportSize({ width: 375, height: 812 });
   await login(page, "CN001");
-  // nợ: phản hồi /hien-truong không đóng (lỗi có sẵn trước Astryx, đo 2026-11-15) → chỉ chờ "commit" + phần tử; bỏ khi sửa lỗi đó
-  await page.goto("/hien-truong", { waitUntil: "commit" });
+  await page.goto("/hien-truong", { waitUntil: "domcontentloaded" });
   await setTheme(page, "light");
   const next = page.getByRole("link", { name: /Ghi việc kế tiếp/ });
   if (await next.count()) {
